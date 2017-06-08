@@ -30,9 +30,9 @@ ListenChar(2);
 % now, units in  the getRoomData() are actual centimeters on the ball (if
 % using unity gain in the setExperimentPars()).
 % these parameters should be calibrated from time to time on every rig
-if ~isempty(strfind(RIGNAME, 'ZILLION'))
-    BALL_TO_DEGREE =1/7.7;%1/20000*360;
-    BALL_TO_ROOM = 1/50;
+if ~isempty(strfind(RIGNAME, 'ZAMBONI'))
+    BALL_TO_DEGREE =1/50;%1/20000*360;
+    BALL_TO_ROOM = 1/275;
     PI_OVER_180 = pi/180;
 elseif ~isempty(strfind(RIGNAME, 'ZMAZE'))
     BALL_TO_DEGREE =1/8.3;%1/20000*360;
@@ -107,7 +107,7 @@ try
         %         elseif numScreens == 2
         %             glViewport(201,201,200,200)%1+MYSCREEN.screenRect(3)/3, 0, MYSCREEN.screenRect(3)/3, MYSCREEN.screenRect(4))
         %         end
-        glMatrixMode(GL.PROJECTION);
+        glMatrixMode(GL.PROJECTION);    
         glLoadIdentity;
         % Field of view is 50 degrees from line of sight. Objects closer than
         % 0.1 distance units or farther away than 100 distance units get clipped
@@ -218,7 +218,7 @@ try
         day = freezeOver*nansum([day 0]).*BALL_TO_DEGREE*PI_OVER_180*EXP.aGain; %unused, because dby encodes the same information
         dby = freezeOver*nansum([dby 0]).*BALL_TO_DEGREE*PI_OVER_180*EXP.aGain;
         
-        if isequal(EXP.stimType, 'REPLAY')
+        if isequal(EXP.stimType, 'REPLAY') %%
             TRIAL.posdata(count,T)=SESSION2REPLAY.allTrials(TRIAL.info.no).posdata(count,T);
             TRIAL.posdata(count,X)=SESSION2REPLAY.allTrials(TRIAL.info.no).posdata(count,X);
             TRIAL.posdata(count,Z)=SESSION2REPLAY.allTrials(TRIAL.info.no).posdata(count,Z);
@@ -336,7 +336,7 @@ try
                 TRIAL.info.outcome='WRONG';
                 disp('WRONG');
             end
-            fhandle = @trialEnd;
+            fhandle = @trialEnd; %%%
             break;
         end
         

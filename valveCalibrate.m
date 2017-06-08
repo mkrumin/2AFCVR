@@ -17,13 +17,15 @@ EXP=setExperimentPars;
 
 [~, RIGNAME]=system('hostname');
 
-if ~isempty(strfind(RIGNAME, 'ZILLION'))
-    aoID='Dev2';
-    dioID='Dev2';
+if ~isempty(strfind(RIGNAME, 'ZAMBONI'))
+    daqVendorName = 'ni'; % this name is used for 64-bit interface
+    aoDeviceID='Dev1';
+    aoValveChannel = 'ao0';
+    dioID='Dev1';
     dioCh=1;
     dioPort=0;
-    optiStimChanInd=1;
-    valveChanInd=2;
+    optiStimChanInd=2;
+    valveChanInd=1;
 elseif ~isempty(strfind(RIGNAME, 'ZMAZE'))
     daqVendorName = 'ni'; % this name is used for 64-bit interface
     aoDeviceID='Dev1';
@@ -42,13 +44,11 @@ else
     valveChanInd=2;
 end
 
-ValveClosed = 5;
-ValveOpen = 0;
 daqSession = daq.createSession(daqVendorName);
 daqSession.Rate = 10e3;
 % defining the Analog Output object for the valve (for precise timing)
 daqSession.addAnalogOutputChannel(aoDeviceID, aoValveChannel, 'Voltage');
-daqSession.outputSingleScan(ValveClosed);
+daqSession.outputSingleScan(valveClosedVoltage);
 
 % 
 % TRIAL.info.optiStim=0; % just a patch to prevent the reward() function from crashing

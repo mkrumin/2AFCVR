@@ -1,4 +1,7 @@
+
 function out = getDaySummary(animalName, dateString, trials)
+
+addpath('\\zserver.cortexlab.net\Code\Psychofit');
 
 if nargin<1
     error('You must provide the animal name');
@@ -25,19 +28,28 @@ nSessions = length(idx);
 
 fprintf('\nAnimal %s, found %d session(s) for %s\n\n', animalName, nSessions, dateString);
 
-nRows = floor(sqrt(nSessions+1));
-nColumns = ceil((nSessions+1)/nRows);
+if nSessions>1
+    nRows = floor(sqrt(nSessions+1));
+    nColumns = ceil((nSessions+1)/nRows);
+else
+    nRows = 1;
+    nColumns = 1;
+end
 
 if nSessions>0
     figure;
 end
 
 for iSession = 1:nSessions
-    [folders, filename] = dat.expFilePath(expRefs{idx(iSession)}, 'tmaze');
+    [folders, filename] = dat.expFilePath(expRefs{idx(iSession)}, 'tmaze', 'master');
     try
         load(folders{1})
     catch
-        load(folders{2})
+        try
+            load(folders{2})
+        catch
+            load(folders)
+        end 
     end
     if ~isempty(trials)
         SESSION.allTrials = SESSION.allTrials(trials);
@@ -55,6 +67,7 @@ for iSession = 1:nSessions
     outcome = '';
     behavior = '';
     finished = [];
+    random = [];
     
     for iTrial = 1:nTrials(iSession)
         contrast(iTrial) = SESSION.allTrials(iTrial).info.contrast;
@@ -68,28 +81,56 @@ for iSession = 1:nSessions
             behavior(iTrial) = char('R'+'L'-SESSION.allTrials(iTrial).info.stimulus(1));
         end
         finished(iTrial) = ismember(behavior(iTrial), {'R', 'L'});
+        if isequal(EXP.stimType, 'BAITED')
+            random(iTrial) = iTrial == 1 || outcome(iTrial-1)=='C';
+        else
+            random(iTrial) = true; %assuming 'RANDOM'
+        end
     end
     
     fprintf('nTrials = %d, nSmallRewards = %d, nLargeRewards = %d\n', ...
         nTrials(iSession), nSmallRewards(iSession), nLargeRewards(iSession));
-    fprintf('nTrialsFinished = %d, nTrialsCorrect = %d, pValue = %5.4f\n', ...
-        sum(finished), sum(outcome=='C'), 2*(1-cdf('bino', sum(outcome=='C'), sum(finished), 0.5)));
+    fprintf('nTrialsFinished = %d, of them random = %d, of them correct = %d, pValue = %5.4f\n', ...
+        sum(finished), sum(finished & random), sum(outcome=='C' & random), 2*(1-cdf('bino', sum(outcome=='C' & random), sum(finished & random), 0.5)));
     fprintf('Water received = %05.3f ml\n\n', waterAmount(iSession));
     
     cc = unique(contrast);
     pp = nan(size(cc));
+    nn = nan(size(cc));
     for iCC=1:length(cc)
-        indices = (contrast == cc(iCC)) & finished;
+        indices = (contrast == cc(iCC)) & finished & random;
+        nn(iCC) = sum(indices);
         pp(iCC) = sum(behavior(indices)=='R')/sum(indices);
     end
+    
+    % get confidence intervals of the binomial distribution
+    alpha = 0.1;
+    [prob, pci] = binofit(pp.*nn, nn, alpha);
     subplot(nRows, nColumns, iSession);
-    plot(cc, pp, 'o');
-    title(sprintf('Session %d, nTrials = %d', expSessions(idx(iSession)), nTrials(iSession)));
+    errorbar(cc, pp, pp-pci(:,1)', pp-pci(:,2)', 'o')
+%     plot(cc, pp, 'o');
+
+    title(sprintf('Session %d, nTotalTrials = %d, nRandomTrials = %d', expSessions(idx(iSession)), nTrials(iSession), sum(random)));
     set(gca, 'XTick', cc)
     ylim([0 1]);
     hold on;
     plot(xlim, [0.5, 0.5], 'k:');
     plot([0 0], ylim, 'k:');
+    axis square
+    box off
+    
+    % fit a psychometric curve (asymmetric lapse rate)
+    nfits = 10;
+    parstart = [ mean(cc), 3, 0.05, 0.05 ];
+    parmin = [min(cc) 0 0 0];
+    parmax = [max(cc) 10 0.40 0.4];
+    [ pars, L ] = mle_fit_psycho([cc; nn; pp],'erf_psycho_2gammas', parstart, parmin, parmax, nfits);
+    c = -50:50;
+    plot(c, erf_psycho_2gammas(pars, c), 'k', 'LineWidth', 2)
+    
+    % this is a psychometric function with symmetric lapse rate
+    [ pars, L ] = mle_fit_psycho([cc; nn; pp],'erf_psycho');
+    plot(c, erf_psycho(pars, c), 'r', 'LineWidth', 2)
     
     if iSession==1
         allContrast = contrast;
@@ -111,6 +152,7 @@ if nSessions>0
     fprintf('Water received = %05.3f ml\n', sum(waterAmount));
 end
 
+if nSessions>1
     cc = unique(allContrast);
     pp = nan(size(cc));
     for iCC=1:length(cc)
@@ -125,6 +167,7 @@ end
     hold on;
     plot(xlim, [0.5, 0.5], 'k:');
     plot([0 0], ylim, 'k:');
+end
 
 return
 

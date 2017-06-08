@@ -19,6 +19,7 @@ global EXPREF;
 global OFFLINE;
 global SESSION;
 global EXP;
+animalName = regexp(EXPREF, '_([A-Za-z]*\d+)$', 'tokens', 'once');
 
 % cleans up and exits state system
 
@@ -39,7 +40,6 @@ if ~isequal(EXP.stimType, 'REPLAY_SCRAMBLED')
     waterAmount = nSmallRewards*0.002 + nLargeRewards*0.004;
     fprintf('Water received = %05.3f ml\n', waterAmount);
 end
-
 
 if ~OFFLINE
     stopAllDaq;
@@ -75,3 +75,21 @@ if(heapFreeMemory < (heapTotalMemory*0.1))
 end
 
 fhandle = []; % exit state system
+
+if strfind(animalID, 'fake')
+    
+else 
+    fprintf('Saving to Alyx..\n')
+    addpath(genpath('C:\Users\Experiment\Documents\MATLAB\Alyx'));
+    onLoad;
+    
+%     alyxData.user = 'julie';
+    myAlyx = alyx.loginWindow();
+    
+    alyxData.subject = animalName{1}; % note lower-case "subject", it is case sensitive
+    alyxData.water_administered = waterAmount; %units of mL
+    alyxData.hydrogel = false;
+    
+    newWater = alyx.postData(myAlyx, 'water-administrations', alyxData);
+    fprintf('%05.3f ml water administered\n%s\n', waterAmount, newWater.url)
+end

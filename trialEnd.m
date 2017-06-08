@@ -70,7 +70,7 @@ if ~OFFLINE
     istim=TRIAL.info.no;
     irepeat=1;
     
-    msgString = sprintf('StimEnd %s %d %d %d %d', animalID, iseries, iexp, irepeat, istim);
+    msgString = sprintf('StimEnd %s %d %d %d %d', animalID, iseries, iexp, irepeat, istim); %%%
     
     pnet(ScanImageUDP, 'write', msgString);
     pnet(ScanImageUDP, 'writePacket');
