@@ -13,9 +13,7 @@ end
 % daqSession. We also assume that ValveClosed = 5, and ValveOpen = 0;
 
 sr=daqSession.Rate;
-ValveClosed = 5;
-ValveOpen = 0;
-padding = ValveClosed*ones(3, 1);
+padding = valveClosedVoltage*ones(3, 1);
 
 switch command
     case 'SMALL'
@@ -34,7 +32,7 @@ if ~daqSession.IsDone
     
     daqSession.wait();
 end
-valveData=[padding; ValveOpen*ones(nSamplesOpen, 1); padding];
+valveData=[padding; valveOpenVoltage*ones(nSamplesOpen, 1); padding];
 % padding with 5s to get to the minimum required (by DAQ) 6 samples
 daqSession.queueOutputData(valveData);
 daqSession.startBackground;

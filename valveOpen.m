@@ -10,13 +10,15 @@ function valveOpen
 
 [~, RIGNAME]=system('hostname');
 
-if ~isempty(strfind(RIGNAME, 'ZILLION'))
-    aoID='Dev2';
-    dioID='Dev2';
+if ~isempty(strfind(RIGNAME, 'ZAMBONI'))
+    daqVendorName = 'ni'; % this name is used for 64-bit interface
+    aoDeviceID='Dev1';
+    aoValveChannel = 'ao0';
+    dioID='Dev1';
     dioCh=1;
     dioPort=0;
-    optiStimChanInd=1;
-    valveChanInd=2;
+    optiStimChanInd=2;
+    valveChanInd=1;
 elseif ~isempty(strfind(RIGNAME, 'ZMAZE'))
     daqVendorName = 'ni'; % this name is used for 64-bit interface
     aoDeviceID='Dev1';
@@ -35,11 +37,9 @@ else
     valveChanInd=2;
 end
 
-ValveClosed = 5;
-ValveOpen = 0;
 daqSession = daq.createSession(daqVendorName);
 daqSession.addAnalogOutputChannel(aoDeviceID, aoValveChannel, 'Voltage');
-daqSession.outputSingleScan(ValveOpen);
+daqSession.outputSingleScan(valveOpenVoltage);
 
 stop(daqSession);
 delete(daqSession);

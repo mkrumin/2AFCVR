@@ -11,5 +11,4 @@ if daqSession.IsRunning
     daqSession.wait();
 end
 
-ValveClosed = 5;
-daqSession.outputSingleScan(ValveClosed);
+daqSession.outputSingleScan(valveClosedVoltage);
