@@ -28,6 +28,25 @@ nSessions = length(idx);
 
 fprintf('\nAnimal %s, found %d session(s) for %s\n\n', animalName, nSessions, dateString);
 
+if nSessions>0
+    figureHandle = figure('Name', sprintf('%s %s', animalName, dateString));
+end
+
+while true
+    try
+        singleRun(figureHandle, expRefs(idx), expSessions(idx), trials);
+    catch e
+        warning(e.message)
+    end
+    pause(10);
+end
+end
+
+%================================================
+function singleRun(figureHandle, expRefs, expSessions, trials)
+
+nSessions = length(expRefs);
+
 if nSessions>1
     nRows = floor(sqrt(nSessions+1));
     nColumns = ceil((nSessions+1)/nRows);
@@ -36,12 +55,8 @@ else
     nColumns = 1;
 end
 
-if nSessions>0
-    figure;
-end
-
 for iSession = 1:nSessions
-    [folders, filename] = dat.expFilePath(expRefs{idx(iSession)}, 'tmaze', 'master');
+    [folders, filename] = dat.expFilePath(expRefs{iSession}, 'tmaze', 'master');
     try
         load(folders{1})
     catch
@@ -55,7 +70,7 @@ for iSession = 1:nSessions
         SESSION.allTrials = SESSION.allTrials(trials);
     end
     
-    fprintf('Summary of session %d:\n', expSessions(idx(iSession)));
+    fprintf('Summary of session %d:\n', expSessions(iSession));
     nSmallRewards(iSession) = sum(ismember({SESSION.Log(2:end).Event}, {'INTERMEDIATE', 'USER'}));
     nIntermediateRewards(iSession) = sum(ismember({SESSION.Log(2:end).Event}, {'INTERMEDIATE'}));
     nUserRewards(iSession) = sum(ismember({SESSION.Log(2:end).Event}, {'USER'}));
@@ -88,10 +103,11 @@ for iSession = 1:nSessions
         end
     end
     
+    pValue = 2*(1-cdf('bino', sum(outcome=='C' & random), sum(finished & random), 0.5));
     fprintf('nTrials = %d, nSmallRewards = %d, nLargeRewards = %d\n', ...
         nTrials(iSession), nSmallRewards(iSession), nLargeRewards(iSession));
     fprintf('nTrialsFinished = %d, of them random = %d, of them correct = %d, pValue = %5.4f\n', ...
-        sum(finished), sum(finished & random), sum(outcome=='C' & random), 2*(1-cdf('bino', sum(outcome=='C' & random), sum(finished & random), 0.5)));
+        sum(finished), sum(finished & random), sum(outcome=='C' & random), pValue);
     fprintf('Water received = %05.3f ml\n\n', waterAmount(iSession));
     
     cc = unique(contrast);
@@ -105,12 +121,21 @@ for iSession = 1:nSessions
     
     % get confidence intervals of the binomial distribution
     alpha = 0.1;
-    [prob, pci] = binofit(pp.*nn, nn, alpha);
+    [prob, pci] = binofit(round(pp.*nn), nn, alpha);
+    figure(figureHandle);
     subplot(nRows, nColumns, iSession);
+    cla;
     errorbar(cc, pp, pp-pci(:,1)', pp-pci(:,2)', 'o')
 %     plot(cc, pp, 'o');
-
-    title(sprintf('Session %d, nTotalTrials = %d, nRandomTrials = %d', expSessions(idx(iSession)), nTrials(iSession), sum(random)));
+    
+    titStr{1} = sprintf('Session %d, nTotalTrials = %d, nRandomTrials = %d',...
+        expSessions(iSession), nTrials(iSession), sum(random));
+    if pValue>0.00005
+        titStr{2} = sprintf('pVal = %6.4f, water = %5.3f [ml]', pValue, waterAmount(iSession));
+    else
+        titStr{2} = sprintf('pVal = %d, water = %5.3f [ml]', pValue, waterAmount(iSession));
+    end
+    title(titStr);
     set(gca, 'XTick', cc)
     ylim([0 1]);
     hold on;
@@ -160,6 +185,7 @@ if nSessions>1
         pp(iCC) = sum(allBehavior(indices)=='R')/sum(indices);
     end
     subplot(nRows, nColumns, nSessions+1);
+    cla;
     plot(cc, pp, 'o');
     title(sprintf('All Sessions, nTrials = %d', sum(nTrials)));
     set(gca, 'XTick', cc)
@@ -169,5 +195,6 @@ if nSessions>1
     plot([0 0], ylim, 'k:');
 end
 
-return
+end
+
 

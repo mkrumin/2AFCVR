@@ -8,8 +8,7 @@ function MouseBallExp(offline_in)
 %           MouseBallExp(1): To run/debug on computers that not connected
 %           to the mouse ball or calibrated
 
-[~, rig] = system('hostname'); 
-rig = rig((rig ~= 10)); % to remoove the CR at the end
+[~, rig] = system('hostname'); rig = rig((rig ~= 10)); % to remove the CR at the end
 
 if strfind(rig, 'ZAMBONI')
     clear all;
@@ -38,7 +37,8 @@ end
 
 clear mex
 
-EXP = setExperimentPars;
+EXP = setExperimentPars; %is this needed?  
+
 
 %% Initialize IP addresses and UDP communication
 Screen('Preference', 'SkipSyncTests', 1);
@@ -71,6 +71,7 @@ else
     optiStimChanInd=1;
     valveChanInd=2;
 end
+
 if ~OFFLINE
 
     % if not in OFFLINE mode define the UDP ports

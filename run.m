@@ -31,17 +31,17 @@ ListenChar(2);
 % using unity gain in the setExperimentPars()).
 % these parameters should be calibrated from time to time on every rig
 if ~isempty(strfind(RIGNAME, 'ZAMBONI'))
-    BALL_TO_DEGREE =1/50;%1/20000*360;
-    BALL_TO_ROOM = 1/275;
+    BALL_TO_DEGREE = 1/100;%1/20000*360;
+    BALL_TO_ROOM = 1/70;
     PI_OVER_180 = pi/180;
 elseif ~isempty(strfind(RIGNAME, 'ZMAZE'))
     BALL_TO_DEGREE =1/8.3;%1/20000*360;
     BALL_TO_ROOM = 1/53;
     PI_OVER_180 = pi/180;
 else
-    BALL_TO_DEGREE =1/7.7;%1/20000*360;
-    BALL_TO_ROOM = 1/50;
-    PI_OVER_180 = pi/180;
+%     BALL_TO_DEGREE =1/7.7;%1/20000*360;
+%     BALL_TO_ROOM = 1/50;
+%     PI_OVER_180 = pi/180;
 end
 affinityMultiplier=1; % between 0 and 1, 1 - no affinity, 0 - sticking to the center of the corridors
 % if affinity multiplier <1, then the mouse will be 'dragged' towards the

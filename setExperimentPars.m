@@ -1,14 +1,14 @@
 function Exp = setExperimentPars
 
 %% frequently changed parameters go here
-smallRewardValveTime = 0.06; % should be calibrated to give ~2ul reward; set by MK 2017
-largeRewardValveTime = 0.11; % should be calibrated to give ~4ul reward; set by MK 2017
-rewardDistance = Inf;%48; % give intermediate rewards every 'rewardDistance' cm of travel
+smallRewardValveTime = 0.07; % should be calibrated to give ~2ul reward; set by MK 2017
+largeRewardValveTime = 0.118; % should be calibrated to give ~4ul reward; set by MK 2017
+rewardDistance = 35;%48; % give intermediate rewards every 'rewardDistance' cm of travel
 
-stimType = 'BAITED'; % 'BAITED', 'RANDOM', 'ALTERNATING', 'BOTH', 'REPLAY', 'INTERLIEVED', 'REPLAY_SCRAMBLED' 
-contrasts = [0 6 12 25 50]; % contrast levels of the gratings [0 6 12 25 50]
+stimType = 'BOTH'; % 'BAITED', 'RANDOM', 'ALTERNATING', 'BOTH', 'REPLAY', 'INTERLIEVED', 'REPLAY_SCRAMBLED' 
+contrasts = [25 50]; % contrast levels of the gratings [0 6 12 25 50]
 aGain = -0.2;   % gain of rotation angle
-restrict = 0; % 1 if we want to restrict the range of the head direction. 
+restrict = 1; % 1 if we want to restrict the range of the head direction. 
 % if set to be less than pi/2 it will not allow the animal to FAIL the task
 restrictAngle = pi/6; % pi/4=+-45 degrees, pi/6 = +-30 degrees
 fadeInFrames = 15;
@@ -37,7 +37,7 @@ Exp = struct('date', date,...                   %date of the experiment
              'rewardDistance', rewardDistance,...          % give intermediate rewards every 'rewardDistance' cm of travel
 ... visual stimulus sequence related parameters
              'stimType', stimType, ...          % 'RANDOM', 'ALTERNATING', 'BOTH', 'REPLAY', 'INTERLIEVED'
-             'replayMode', 'ALL', ...           % 'ALL', 'notTIMEOUT'
+             'replayMode', 'notTIMEOUT', ...           % 'ALL', 'notTIMEOUT'
              'replaySnippetDuration', 30, ...   % duration of a single snippet (in frames) for 'REPLAY_SCRAMBLED'
              'probRight', 0.5, ...              % probability of the stimulus to be on the right (affects 'RANDOM' & 'INTERLIEVED' only)
              'contrasts', contrasts, ...        % contrast levels of the gratings [0 6 12 25 50]

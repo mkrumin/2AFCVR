@@ -37,7 +37,7 @@ if ~isequal(EXP.stimType, 'REPLAY_SCRAMBLED')
     fprintf('\nnTrials = %d, nSmallRewards = %d, nLargeRewards = %d\n\n', ...
         length(SESSION.allTrials), nSmallRewards, nLargeRewards);
     
-    waterAmount = nSmallRewards*0.002 + nLargeRewards*0.004;
+    waterAmount = nSmallRewards*0.002 + nLargeRewards*0.004; %!!!
     fprintf('Water received = %05.3f ml\n', waterAmount);
 end
 

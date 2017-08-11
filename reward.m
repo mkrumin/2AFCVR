@@ -19,7 +19,7 @@ switch command
     case 'SMALL'
         nSamplesOpen=round(EXP.smallRewardTime*sr);
     case 'CORRECT'
-        nSamplesOpen=round(EXP.largeRewardTime*sr);
+        nSamplesOpen=round(EXP.largeRewardTime*sr); %%%
     otherwise
         disp('reward command ''', command,''' not recognized');
 end
