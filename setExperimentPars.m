@@ -1,9 +1,11 @@
 function Exp = setExperimentPars
 
 %% frequently changed parameters go here
-smallRewardValveTime = 0.07; % should be calibrated to give ~2ul reward; set by MK 2017
-largeRewardValveTime = 0.118; % should be calibrated to give ~4ul reward; set by MK 2017
-rewardDistance = 35;%48; % give intermediate rewards every 'rewardDistance' cm of travel
+smallRewardAmount = 0.002;
+largeRewardAmount = 0.004;
+smallRewardValveTime = getValveTime(smallRewardAmount); % should be calibrated to give ~2ul reward; set by MK 2017
+largeRewardValveTime = getValveTime(largeRewardAmount); % should be calibrated to give ~4ul reward; set by MK 2017
+rewardDistance = Inf;%48; % give intermediate rewards every 'rewardDistance' cm of travel
 
 stimType = 'BOTH'; % 'BAITED', 'RANDOM', 'ALTERNATING', 'BOTH', 'REPLAY', 'INTERLIEVED', 'REPLAY_SCRAMBLED' 
 contrasts = [25 50]; % contrast levels of the gratings [0 6 12 25 50]
@@ -32,6 +34,8 @@ Exp = struct('date', date,...                   %date of the experiment
              'maxNRewards', 2,...               % max number of rewards on a single base
              'rewardGap', 0.7, ...              % time in between two rewards on a single base
              'rewardDelay', 0.7, ...            % delay for the first reward
+             'smallRewardAmount', smallRewardAmount,...
+             'largeRewardAmount', largeRewardAmount ,...
              'smallRewardTime', smallRewardValveTime,...         % should be calibrated to give ~2ul reward
              'largeRewardTime', largeRewardValveTime,...         % should be calibrated to give ~4ul reward
              'rewardDistance', rewardDistance,...          % give intermediate rewards every 'rewardDistance' cm of travel

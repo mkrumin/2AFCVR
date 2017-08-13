@@ -37,7 +37,8 @@ if ~isequal(EXP.stimType, 'REPLAY_SCRAMBLED')
     fprintf('\nnTrials = %d, nSmallRewards = %d, nLargeRewards = %d\n\n', ...
         length(SESSION.allTrials), nSmallRewards, nLargeRewards);
     
-    waterAmount = nSmallRewards*0.002 + nLargeRewards*0.004; %!!!
+    waterAmount = nSmallRewards*EXP.smallRewardAmount + ...
+        nLargeRewards*EXP.largeRewardAmount;
     fprintf('Water received = %05.3f ml\n', waterAmount);
 end
 
@@ -78,12 +79,12 @@ fhandle = []; % exit state system
 
 if strfind(animalID, 'fake')
     
-else 
+else
     fprintf('Saving to Alyx..\n')
     addpath(genpath('C:\Users\Experiment\Documents\MATLAB\Alyx'));
     onLoad;
     
-%     alyxData.user = 'julie';
+    %     alyxData.user = 'julie';
     myAlyx = alyx.loginWindow();
     
     alyxData.subject = animalName{1}; % note lower-case "subject", it is case sensitive

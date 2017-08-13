@@ -18,8 +18,7 @@ switch tag
         play(oBeepSTART); % no water reward, only sound
     case 'CORRECT'
         playblocking(oBeepCORRECT);
-%         reward('CORRECT');
-        reward('SMALL'); %!!!
+        reward('CORRECT');
     case 'WRONG'
         playblocking(oBeepWRONG);
     case 'USER'

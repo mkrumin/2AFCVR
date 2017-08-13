@@ -76,8 +76,9 @@ for iSession = 1:nSessions
     nUserRewards(iSession) = sum(ismember({SESSION.Log(2:end).Event}, {'USER'}));
     nLargeRewards(iSession) = sum(ismember({SESSION.Log(2:end).Event}, {'CORRECT'}));
     nTrials(iSession) = SESSION.Log(end).iTrial;
-    waterAmount(iSession) = nSmallRewards(iSession)*0.002 + nLargeRewards(iSession)*0.004;
-    
+    waterAmount(iSession) = nSmallRewards(iSession)*EXP.smallRewardAmount + ...
+        nLargeRewards(iSession)*EXP.largeRewardAmount;
+
     contrast = [];
     outcome = '';
     behavior = '';
