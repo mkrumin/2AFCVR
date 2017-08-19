@@ -48,11 +48,11 @@ function singleRun(figureHandle, expRefs, expSessions, trials)
 nSessions = length(expRefs);
 
 if nSessions>1
-    nRows = floor(sqrt(nSessions+1));
-    nColumns = ceil((nSessions+1)/nRows);
+    nRows = floor(sqrt(2*nSessions+1));
+    nColumns = ceil((2*nSessions+1)/nRows);
 else
     nRows = 1;
-    nColumns = 1;
+    nColumns = 2;
 end
 
 for iSession = 1:nSessions
@@ -64,7 +64,7 @@ for iSession = 1:nSessions
             load(folders{2})
         catch
             load(folders)
-        end 
+        end
     end
     if ~isempty(trials)
         SESSION.allTrials = SESSION.allTrials(trials);
@@ -78,7 +78,7 @@ for iSession = 1:nSessions
     nTrials(iSession) = SESSION.Log(end).iTrial;
     waterAmount(iSession) = nSmallRewards(iSession)*EXP.smallRewardAmount + ...
         nLargeRewards(iSession)*EXP.largeRewardAmount;
-
+    
     contrast = [];
     outcome = '';
     behavior = '';
@@ -124,10 +124,10 @@ for iSession = 1:nSessions
     alpha = 0.1;
     [prob, pci] = binofit(round(pp.*nn), nn, alpha);
     figure(figureHandle);
-    subplot(nRows, nColumns, iSession);
+    subplot(nRows, nColumns, 2*(iSession-1)+1);
     cla;
     errorbar(cc, pp, pp-pci(:,1)', pp-pci(:,2)', 'o')
-%     plot(cc, pp, 'o');
+    %     plot(cc, pp, 'o');
     
     titStr{1} = sprintf('Session %d, nTotalTrials = %d, nRandomTrials = %d',...
         expSessions(iSession), nTrials(iSession), sum(random));
@@ -157,6 +157,29 @@ for iSession = 1:nSessions
     % this is a psychometric function with symmetric lapse rate
     [ pars, L ] = mle_fit_psycho([cc; nn; pp],'erf_psycho');
     plot(c, erf_psycho(pars, c), 'r', 'LineWidth', 2)
+    
+    subplot(nRows, nColumns, 2*iSession);
+    cla;
+    iRC = find(behavior=='R' & contrast>0);
+    iLC = find(behavior=='L' & contrast<0);
+    iRW = find(behavior=='R' & contrast<0);
+    iLW = find(behavior=='L' & contrast>0);
+    iR0 = find(behavior=='R' & contrast==0);
+    iL0 = find(behavior=='L' & contrast==0);
+    stem(iRC, ones(size(iRC)), 'g', 'Marker', '.');
+    hold on;
+    stem(iLC, -ones(size(iLC)), 'g', 'Marker', '.');
+    stem(iRW, ones(size(iRW)), 'r', 'Marker', '.');
+    stem(iLW, -ones(size(iLW)), 'r', 'Marker', '.');
+    stem(iR0, ones(size(iR0)), 'k', 'Marker', '.');
+    stem(iL0, -ones(size(iL0)), 'k', 'Marker', '.');
+    
+    xlabel('iTrial')
+    ylabel('behavior')
+    set(gca, 'YTick', [-0.5 0.5], 'YTickLabel', {'L', 'R'});
+    xlim([0 length(outcome)]);
+    view(90, -90)
+    
     
     if iSession==1
         allContrast = contrast;
