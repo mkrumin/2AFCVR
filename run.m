@@ -306,10 +306,25 @@ try
         end
         
         %% checking if it's time to start a timed optical stimulation (and check if it is finished)
-        if EXP.optiStim && isequal(EXP.optiStimType, 'TIME')
-            timeFromStart=toc(trialStartTic);
-            if (timeFromStart-EXP.stopTime>=EXP.optiStimOnsetTime) && (timeFromStart-EXP.stopTime-EXP.optiStimOnsetTime<EXP.optiStimDuration)
-                doOptiStim;
+        if EXP.optiStim && isequal(TRIAL.info.optiStim.stimType, 'POSITION')
+            currentZ = -TRIAL.posdata(count,Z);
+            if currentZ >= TRIAL.info.optiStim.onset && ~optiStimOn
+                    msgStruct = struct('instruction', 'ZapStart',...
+                        'ExpRef', EXPREF);
+                    msgJson = savejson('msg', msgStruct);
+
+                    pnet(OptiStimUDP, 'write', msgJson);
+                    pnet(OptiStimUDP, 'writePacket');
+
+            end
+            if currentZ >= TRIAL.info.optiStim.offset && optiStimOn
+                    msgStruct = struct('instruction', 'ZapStop',...
+                        'ExpRef', EXPREF);
+                    msgJson = savejson('msg', msgStruct);
+
+                    pnet(OptiStimUDP, 'write', msgJson);
+                    pnet(OptiStimUDP, 'writePacket');
+
             end
         end
         

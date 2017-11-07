@@ -22,6 +22,7 @@ global OFFLINE
 global ScanImageUDP;
 global EyeCameraUDP;
 global TimelineUDP;
+global OptiStimUDP;
 global EXPREF;
 
 TRIAL_COUNT = TRIAL_COUNT +1;
@@ -33,6 +34,11 @@ info.epoch = 0; %number of steps within a run loop
 info.abort = 0;
 info.start = -1; % it will be set to 1 at the beginning of run.m
 
+if EXP.optiStim
+    nOptions = length(EXP.optiStimList);
+    optInd = ceil(rand*nOptions);
+    info.optiStim = EXP.optiStimList(optInd);
+end
 TRIAL.info = info;
 
 % fprintf('PrepareNextTrial\n'); % debug
@@ -74,6 +80,18 @@ if ~OFFLINE
     pnet(TimelineUDP, 'write', msgString);
     pnet(TimelineUDP, 'writePacket');
     
+    msgStruct = struct('instruction', 'ZapPrepare',...
+        'ExpRef', EXPREF,...
+        'iTrial', TRIAL.info.no,...
+        'maxDuration', EXP.maxTrialDuration,...
+        'ML', info.optiStim.ML,...
+        'AP', info.optiStim.AP,...
+        'power', info.optiStim.laserPower);
+    msgJson = savejson('msg', msgStruct);
+
+    pnet(OptiStimUDP, 'write', msgJson);
+    pnet(OptiStimUDP, 'writePacket');
+
 end
 
 if isequal(EXP.stimType, 'REPLAY_SCRAMBLED')

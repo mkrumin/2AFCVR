@@ -19,6 +19,7 @@ global BallUDPPort;    % the UDP port
 global ScanImageUDP;  % the UDP port
 global EyeCameraUDP;  % the UDP port
 global TimelineUDP;  % the UDP port
+global OptiStimUDP; 
 global SYNC;        % synchronization square
 global MYSCREEN;    % screen info
 global OFFLINE;
@@ -49,6 +50,7 @@ if strfind(RIGNAME, 'ZMAZE')
     ScanImageIP='zscope';
     TimelineIP='zcamp3';
     EyeCameraIP='zquad';
+    OptiStimIP = 'zcamp3';
     daqVendorName = 'ni'; % this name is used for 64-bit interface
     aoDeviceID='Dev1';
     aoValveChannel = 'ao0';
@@ -65,7 +67,7 @@ else
     daqVendorName = 'ni'; % this name is used for 64-bit interface
     aoDeviceID='Dev1';
     aoValveChannel = 'ao0';  
-    dioDiviceID='Dev1';
+    dioDeviceID='Dev1';
     dioCh=1;
     dioPort=0;
     optiStimChanInd=1;
@@ -91,7 +93,11 @@ if ~OFFLINE
     % this port is for eye-tracking camera
     EyeCameraUDP  = pnet('udpsocket', 1001);
     pnet(EyeCameraUDP, 'udpconnect', EyeCameraIP, 1001);
-    
+
+    % this port is for optical stimulation set up
+    OptiStimUDP  = pnet('udpsocket', 1001);
+    pnet(OptiStimUDP, 'udpconnect', OptiStimIP, 1002);
+
 end
 
 % initialize DAQ-----------------------------------------------------------
