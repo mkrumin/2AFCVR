@@ -8,9 +8,14 @@ function MouseBallExp(offline_in)
 %           MouseBallExp(1): To run/debug on computers that not connected
 %           to the mouse ball or calibrated
 
-[~, rig] = system('hostname'); rig = rig((rig ~= 10)); % to remove the CR at the end
-
-if strfind(rig, 'ZAMBONI')
+% [~, rig] = system('hostname'); rig = rig((rig ~= 10)); % to remove the CR at the end
+% 
+% if strfind(rig, 'ZAMBONI')
+%     clear all;
+% end
+% the problem is apparently with matlab version, and not rig
+v = ver('Matlab');
+if str2double(v.Version)>=9.3
     clear all;
 end
 

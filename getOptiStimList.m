@@ -5,7 +5,7 @@ list = struct;
 % definte all the locations with laser Powers
 ML = [-1.7, 1.7];
 AP = [-2, -2];
-laserPower = [2 2];
+laserPower = [1 1];
 
 % define possible stimulation types
 % stimType = {'POSITION', 'POSITION', 'POSITION'};
@@ -13,7 +13,7 @@ laserPower = [2 2];
 % of the maze
 % offset = [35 70 110];
 stimType = {'POSITION'};
-onset = [0];
+onset = [15];
 offset = [110];
 
 nPoints = length(ML);
