@@ -95,8 +95,10 @@ if ~OFFLINE
     pnet(EyeCameraUDP, 'udpconnect', EyeCameraIP, 1001);
 
     % this port is for optical stimulation set up
-    OptiStimUDP  = pnet('udpsocket', 1001);
-    pnet(OptiStimUDP, 'udpconnect', OptiStimIP, 1002);
+    if EXP.optiStim
+        OptiStimUDP  = pnet('udpsocket', 1001);
+        pnet(OptiStimUDP, 'udpconnect', OptiStimIP, 1002);
+    end
 
 end
 

@@ -221,8 +221,6 @@ if ~OFFLINE
     [animalID, dateID, sessionID] = dat.expRefToMpep(EXPREF);
     
     msgString = sprintf('ExpStart %s %d %d', animalID, dateID, sessionID);
-    msgStruct = struct('instruction', 'ExpStart', 'ExpRef', EXPREF);
-    msgJson = savejson('msg', msgStruct);
         
     pnet(ScanImageUDP, 'write', msgString);
     pnet(ScanImageUDP, 'writePacket');
@@ -233,8 +231,13 @@ if ~OFFLINE
     pnet(TimelineUDP, 'write', msgString);
     pnet(TimelineUDP, 'writePacket');
     
-    pnet(OptiStimUDP, 'write', msgJson);
-    pnet(OptiStimUDP, 'writePacket');
+    if EXP.optiStim
+        msgStruct = struct('instruction', 'ExpStart', 'ExpRef', EXPREF);
+        msgJson = savejson('msg', msgStruct);
+        
+        pnet(OptiStimUDP, 'write', msgJson);
+        pnet(OptiStimUDP, 'writePacket');
+    end
     
     % wait for everybody to start
     pause(7);

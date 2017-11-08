@@ -8,12 +8,8 @@ switch EXP.stimType
     case {'RANDOM', 'REPLAY'}
         stimulus=SESSION.stimSequence{TRIAL.info.no};
         contrast=SESSION.contrastSequence(TRIAL.info.no);
-        optiStim=SESSION.optiStimAmplitude(TRIAL.info.no);
-        optiStim2=SESSION.optiStimAmplitude2(TRIAL.info.no);
     case 'BAITED'
         iTrial=TRIAL.info.no;
-        optiStim=SESSION.optiStimAmplitude(iTrial);
-        optiStim2=SESSION.optiStimAmplitude2(iTrial);
         sides={'LEFT', 'RIGHT'};
         nContrasts=length(SESSION.options.gratingContrasts);
         SESSION.contrastSequence(iTrial) = ...
@@ -35,8 +31,6 @@ switch EXP.stimType
         
     case 'INTERLIEVED'
         iTrial=TRIAL.info.no;
-        optiStim=SESSION.optiStimAmplitude(iTrial);
-        optiStim2=SESSION.optiStimAmplitude2(iTrial);
         if iTrial==1
             stimulus=SESSION.stimSequence{iTrial};
             contrast=SESSION.contrastSequence(iTrial);
@@ -65,8 +59,6 @@ switch EXP.stimType
         SESSION.stimSequence{TRIAL.info.no}='BOTH';
         stimulus=SESSION.stimSequence{TRIAL.info.no};
         contrast=SESSION.contrastSequence(TRIAL.info.no);
-        optiStim=SESSION.optiStimAmplitude(TRIAL.info.no);
-        optiStim2=SESSION.optiStimAmplitude2(TRIAL.info.no);
         
     case 'ALTERNATING'
         sides={'LEFT', 'RIGHT'};
@@ -87,16 +79,12 @@ switch EXP.stimType
         end
         stimulus=SESSION.stimSequence{TRIAL.info.no};
         contrast=SESSION.contrastSequence(TRIAL.info.no);
-        optiStim=SESSION.optiStimAmplitude(TRIAL.info.no);
-        optiStim2=SESSION.optiStimAmplitude2(TRIAL.info.no);
     otherwise
         disp('stimulus type unrecognized');
 end
 
 TRIAL.info.stimulus=stimulus;
 TRIAL.info.contrast=contrast;
-TRIAL.info.optiStim=optiStim;
-TRIAL.info.optiStim2=optiStim2;
 
 contrastIndex=find(SESSION.options.gratingContrasts==contrast);
 gratingName=['COSGRATING', num2str(contrastIndex)];

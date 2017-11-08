@@ -16,6 +16,7 @@ global SESSION;
 global SESSION2REPLAY;
 global MYSCREEN;
 global SYNC;
+global EXPREF;
 % global ROOM;
 global SNAPSHOT
 
@@ -81,17 +82,12 @@ timeIsUp =0;
 trialActive=false; % will be set to 'true' once the animal performs a stop
 freezeOver=false;
 optiStimON=false;
+optiStimDone = false;
 TRIAL.info.start = clock;
 
 %% Defining and building the visual stimulus
 
 GL.wallTextures = getScene;
-
-%% Starting optogenetic stimulation, if needed
-if EXP.optiStim && isequal(EXP.optiStimType, 'TRIAL')
-    startOptiStim([TRIAL.info.optiStim, TRIAL.info.optiStim2]);
-    optiStimON=true;
-end
 
 %% Starting the trial here
 trialStartTic=tic;
@@ -312,23 +308,25 @@ try
                 currentZ = -TRIAL.posdata(count,Z);
                 zOnset = TRIAL.info.optiStim.onset;
                 zOffset = TRIAL.info.optiStim.offset;
-                if currentZ >= zOnset && ~optiStimOn
+                if currentZ >= zOnset && currentZ < zOffset && ...
+                        ~optiStimDone && (blankTime-EXP.grayScreenDur)>-0.5
                     msgStruct = struct('instruction', 'ZapStart',...
-                        'ExpRef', EXP.ExpRef);
+                        'ExpRef', EXPREF);
                     msgJson = savejson('msg', msgStruct);
                     
                     pnet(OptiStimUDP, 'write', msgJson);
                     pnet(OptiStimUDP, 'writePacket');
-                    optiStimOn = true;
+                    optiStimON = true;
+                    optiStimDone = true; % make sure it will only be done once per trial
                 end
-                if currentZ >= zOffset && optiStimOn
+                if currentZ >= zOffset && optiStimON
                     msgStruct = struct('instruction', 'ZapStop',...
-                        'ExpRef', EXP.ExpRef);
+                        'ExpRef', EXPREF);
                     msgJson = savejson('msg', msgStruct);
                     
                     pnet(OptiStimUDP, 'write', msgJson);
                     pnet(OptiStimUDP, 'writePacket');
-                    optiStimOn = false;
+                    optiStimON = false;
                 end
             end
         end
