@@ -57,6 +57,13 @@ if ~OFFLINE
     
     pnet(TimelineUDP, 'write', msgString);
     pnet(TimelineUDP, 'writePacket');
+    
+    msgStruct = struct('instruction', 'ExpEnd', 'ExpRef', EXPREF);
+    msgJson = savejson('msg', msgStruct);
+    
+    pnet(OptiStimUDP, 'write', msgJson);
+    pnet(OptiStimUDP, 'writePacket');
+
 end
 
 heapTotalMemory = java.lang.Runtime.getRuntime.totalMemory;
