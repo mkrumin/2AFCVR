@@ -5,7 +5,7 @@ list = struct;
 % definte all the locations with laser Powers
 ML = [-1.7, 1.7];
 AP = [-2, -2];
-laserPower = [1 1];
+laserPower = [0.8 0.8];
 
 % define possible stimulation types
 % stimType = {'POSITION', 'POSITION', 'POSITION'};
