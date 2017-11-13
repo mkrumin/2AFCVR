@@ -16,7 +16,12 @@ restrict = 1; % 1 if we want to restrict the range of the head direction.
 restrictAngle = pi/6; % pi/4=+-45 degrees, pi/6 = +-30 degrees
 fadeInFrames = 15;
 
-listOfPoints = getOptiStimList;
+optiStim = 0;
+if optiStim
+    listOfPoints = getOptiStimList;
+else
+    listOfPoints = [];
+end
 
 %% definition of the whole structure
 Exp = struct('date', date,...                   %date of the experiment
@@ -55,7 +60,7 @@ Exp = struct('date', date,...                   %date of the experiment
              'freezeDuration', 0.2, ...         % for how long to show the first frame of the maze before allowing to move
              'fadeInFrames', fadeInFrames, ...
 ... optical stimulation related parameters
-             'optiStim', 1, ...                 % Do we do inactivation/stimulation?
+             'optiStim', optiStim, ...                 % Do we do inactivation/stimulation?
              'optiStimList', listOfPoints, ...  % a structure with the list of stimulation locations 
 ... room related parameters 
              'mazeType', 'TMaze', ...
