@@ -37,27 +37,15 @@ global ROOM;
 
 
 %% defining the valve timer objects, should be moved to I/O initialization
-% open = 0;
-% close = 1;
-rewardStartT = timer('TimerFcn', 'reward(0.0)');
+% it looks like theese timers are never used (MK 2017-11-27)
 
-rewardStopSmallT= timer('TimerFcn', 'reward(1.0)','StartDelay', EXP.smallRewardTime );
-
-rewardStopLargeT= timer('TimerFcn', 'reward(1.0)','StartDelay', EXP.largeRewardTime );
-
-%% defining the sounds for sound signals
-
-sRate = Snd('DefaultRate');
-
-beepSTART  = 0.5*MakeBeep(3300, 0.1, sRate);
-beepCORRECT  = 0.5*MakeBeep(6600, 0.1, sRate);
-beepTIMEOUT = rand(round(sRate*EXP.timeOutSoundDuration), 1)-0.5;
-beepWRONG = rand(round(sRate*0.2), 1)-0.5;
-
-oBeepSTART  = audioplayer(beepSTART, sRate);
-oBeepCORRECT  = audioplayer(beepCORRECT, sRate);
-oBeepTIMEOUT = audioplayer(beepTIMEOUT, sRate);
-oBeepWRONG = audioplayer(beepWRONG, sRate);
+% % open = 0;
+% % close = 1;
+% rewardStartT = timer('TimerFcn', 'reward(0.0)');
+% 
+% rewardStopSmallT= timer('TimerFcn', 'reward(1.0)','StartDelay', EXP.smallRewardTime );
+% 
+% rewardStopLargeT= timer('TimerFcn', 'reward(1.0)','StartDelay', EXP.largeRewardTime );
 
 %% animal (subject) name
 
@@ -73,13 +61,16 @@ if isempty(animalName)
     animalName = 'fake';
 end
 
+EXP = setExperimentPars(animalName);
+
 %% session name (by default using the currnet time in HHMM format)
+sessionName = '';
 if OFFLINE
     sessionName = '9999';
 elseif ~isempty(initParams)
     sessionName=initParams.sessionName;
-else
-    sessionName = input('Please enter session id: ','s');
+% else
+%     sessionName = input('Please enter session id: ','s');
 end
 
 if isempty(sessionName)
@@ -87,6 +78,20 @@ if isempty(sessionName)
 end
 
 sessionName = str2num(sessionName);
+
+%% defining the sounds for sound signals
+
+sRate = Snd('DefaultRate');
+
+beepSTART  = 0.5*MakeBeep(3300, 0.1, sRate);
+beepCORRECT  = 0.5*MakeBeep(6600, 0.1, sRate);
+beepTIMEOUT = rand(round(sRate*EXP.timeOutSoundDuration), 1)-0.5;
+beepWRONG = rand(round(sRate*0.2), 1)-0.5;
+
+oBeepSTART  = audioplayer(beepSTART, sRate);
+oBeepCORRECT  = audioplayer(beepCORRECT, sRate);
+oBeepTIMEOUT = audioplayer(beepTIMEOUT, sRate);
+oBeepWRONG = audioplayer(beepWRONG, sRate);
 
 %% current date
 dateString = datestr(now, 'yyyy-mm-dd');
@@ -119,7 +124,7 @@ end
 
 %% setting experimental params----------------------------------------------
 
-EXP = setExperimentPars;
+% EXP = setExperimentPars;
 if isequal(EXP.stimType, 'REPLAY')
     % this bit of code is potentially not working (with the new file/pathnames
     % used)
