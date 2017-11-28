@@ -1,6 +1,5 @@
 function Exp = loadDefaultPars
 
-warning('Loading default parameters')
 
 %% frequently changed parameters go here
 smallRewardAmount = 0.002;
