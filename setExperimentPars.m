@@ -12,6 +12,9 @@ switch upper(animalName)
     case 'MK028'
         fprintf('Loading parameters for %s\n', upper(animalName));
         Exp = loadMK028;
+    case 'JL015'
+        fprintf('Loading parameters for %s\n', upper(animalName));
+        Exp = loadJL015;  
     otherwise
         fprintf('Loading default parameters\n');
         Exp = loadDefaultPars;
