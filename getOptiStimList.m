@@ -11,7 +11,7 @@ switch upper(animalName)
         % definte all the locations with laser Powers
         ML = [-1.7, 1.7];
         AP = [-2, -2];
-        laserPower = [1.5 1.5];
+        laserPower = [4, 4];
         
         % define possible stimulation types
         % stimType = {'POSITION', 'POSITION', 'POSITION'};
