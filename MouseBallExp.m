@@ -43,8 +43,8 @@ end
 
 clear mex
 
-EXP = setExperimentPars; %is this needed?  
-
+% EXP = setExperimentPars; %is this needed?  
+createExpRef; % this will also create EXP
 
 %% Initialize IP addresses and UDP communication
 Screen('Preference', 'SkipSyncTests', 1);
@@ -124,7 +124,7 @@ end
 fprintf('preparing the screen\n');
 [MYSCREEN, SYNC] = prepareScreen; 
 %Screen('BlendFunction', MYSCREEN.windowPtr, GL.SRC_ALPHA, GL.ONE);
-HideCursor; % usually done in ltScreenInitialize
+% HideCursor; % moved to sessionStart
 
 %
 %=========================================================================%

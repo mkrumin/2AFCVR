@@ -18,9 +18,6 @@ global SESSION;
 global TRIAL;
 global SESSION2REPLAY;
 global TRIAL_COUNT;
-global rewardStartT;
-global rewardStopSmallT;
-global rewardStopLargeT;
 global oBeepSTART;
 global oBeepCORRECT;
 global oBeepTIMEOUT;
@@ -31,19 +28,8 @@ global TimelineUDP;  % the UDP port
 global OptiStimUDP;
 global DIRS;
 global OFFLINE;
-global initParams;
 global EXPREF;
 global ROOM;
-
-
-%% defining the valve timer objects, should be moved to I/O initialization
-% open = 0;
-% close = 1;
-rewardStartT = timer('TimerFcn', 'reward(0.0)');
-
-rewardStopSmallT= timer('TimerFcn', 'reward(1.0)','StartDelay', EXP.smallRewardTime );
-
-rewardStopLargeT= timer('TimerFcn', 'reward(1.0)','StartDelay', EXP.largeRewardTime );
 
 %% defining the sounds for sound signals
 
@@ -59,42 +45,35 @@ oBeepCORRECT  = audioplayer(beepCORRECT, sRate);
 oBeepTIMEOUT = audioplayer(beepTIMEOUT, sRate);
 oBeepWRONG = audioplayer(beepWRONG, sRate);
 
-%% animal (subject) name
-
+%% Asking if everything is ready
+% MK moved it here, so that folders are not created unless everything is ready
 if OFFLINE
-    animalName = 'fake';
-elseif ~isempty(initParams)
-    animalName=initParams.animalName;
+    start = 1;
 else
-    animalName = input('Please enter mouse name: ','s');
+    button = MFquestdlg([1.15 0.5], 'Ready to go?', '', 'GO!', 'Abort', 'Abort');
+    if isequal(button, 'GO!')
+        start = 1;
+    else
+        start = 0;
+    end
+    HideCursor;
 end
 
-if isempty(animalName)
-    animalName = 'fake';
-end
-
-%% session name (by default using the currnet time in HHMM format)
-if OFFLINE
-    sessionName = '9999';
-elseif ~isempty(initParams)
-    sessionName=initParams.sessionName;
+if (start == 1)
+    fhandle = @prepareNextTrial;
 else
-    sessionName = input('Please enter session id: ','s');
+    fprintf('Aborting the experiment\n');
+    fhandle = [];
+    abortExperiment;
+    return;
 end
 
-if isempty(sessionName)
-    sessionName = datestr(now, 'HHMM');
-end
+TRIAL_COUNT = 0;
+fprintf('\nStarting MouseBall session %s\n', EXPREF);
 
-sessionName = str2num(sessionName);
-
-%% current date
-dateString = datestr(now, 'yyyy-mm-dd');
 
 %% defining the paths (both server and local)
 
-EXPREF = dat.constructExpRef(animalName, dateString, sessionName);
-EXP.expRef = EXPREF;
 [folders, filename] = dat.expFilePath(EXPREF, 'tmaze');
 
 DIRS.localFolder = fileparts(folders{1});
@@ -119,7 +98,6 @@ end
 
 %% setting experimental params----------------------------------------------
 
-EXP = setExperimentPars;
 if isequal(EXP.stimType, 'REPLAY')
     % this bit of code is potentially not working (with the new file/pathnames
     % used)
@@ -200,28 +178,12 @@ buildStimSequence;
 % generating an empty structure. Log events will go here
 SESSION.Log = struct;
 
-%%
-if OFFLINE
-    start = 1;
-else
-    start = input('----when ready to go? PRESS 1 and RETURN!!!');
-end
-
-if (start == 1)
-    fhandle = @prepareNextTrial;
-end
-% MK - this looks potentially buggy, what happens if ~(start==1) ????
-
-
-TRIAL_COUNT = 0;
-fprintf('\nStarting MouseBall session %d on %s, animal %s\n', sessionName, dateString, animalName);
-
 %% now send UDPs to all the data hosts
 if ~OFFLINE
     [animalID, dateID, sessionID] = dat.expRefToMpep(EXPREF);
     
     msgString = sprintf('ExpStart %s %d %d', animalID, dateID, sessionID);
-        
+    
     pnet(ScanImageUDP, 'write', msgString);
     pnet(ScanImageUDP, 'writePacket');
     

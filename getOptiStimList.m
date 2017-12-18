@@ -1,20 +1,43 @@
-function list = getOptiStimList()
+function list = getOptiStimList(animalName)
 %%
+if nargin <1
+    animalName = 'default';
+end
+
 list = struct;
 
-% definte all the locations with laser Powers
-ML = [-1.7, 1.7];
-AP = [-2, -2];
-laserPower = [0.8 0.8];
-
-% define possible stimulation types
-% stimType = {'POSITION', 'POSITION', 'POSITION'};
-% onset = [0 35 70]; stimulating during the first, second, or third third
-% of the maze
-% offset = [35 70 110];
-stimType = {'POSITION'};
-onset = [15];
-offset = [110];
+switch upper(animalName)
+    case 'MK027'
+        % definte all the locations with laser Powers
+        ML = [-1.7, 1.7];
+        AP = [-2, -2];
+        laserPower = [4, 4];
+        
+        % define possible stimulation types
+        % stimType = {'POSITION', 'POSITION', 'POSITION'};
+        % onset = [0 35 70]; stimulating during the first, second, or third third
+        % of the maze
+        % offset = [35 70 110];
+        stimType = {'POSITION'};
+        onset = [10];
+        offset = [110];
+    case 'MK028'
+        ML = [-1.7, 1.7];
+        AP = [-2, -2];
+        laserPower = [1 1];
+        stimType = {'POSITION'};
+        onset = [10];
+        offset = [110];
+    otherwise
+        % default values - PPC
+        ML = [-1.7, 1.7];
+        AP = [-2, -2];
+        laserPower = [1 1];
+        stimType = {'POSITION'};
+        onset = [10];
+        offset = [110];
+        
+end
 
 nPoints = length(ML);
 nTypes = length(stimType);
