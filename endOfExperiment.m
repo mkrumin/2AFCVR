@@ -15,6 +15,7 @@ global BallUDPPort
 global ScanImageUDP;
 global EyeCameraUDP;
 global TimelineUDP;
+global OptiStimUDP;
 global EXPREF;
 global OFFLINE;
 global SESSION;
@@ -57,6 +58,15 @@ if ~OFFLINE
     
     pnet(TimelineUDP, 'write', msgString);
     pnet(TimelineUDP, 'writePacket');
+    
+    if EXP.optiStim
+        msgStruct = struct('instruction', 'ExpEnd', 'ExpRef', EXPREF);
+        msgJson = savejson('msg', msgStruct);
+        
+        pnet(OptiStimUDP, 'write', msgJson);
+        pnet(OptiStimUDP, 'writePacket');
+    end
+
 end
 
 heapTotalMemory = java.lang.Runtime.getRuntime.totalMemory;
@@ -67,6 +77,9 @@ pnet(BallUDPPort, 'close');
 pnet(ScanImageUDP, 'close');
 pnet(EyeCameraUDP, 'close');
 pnet(TimelineUDP, 'close');
+if EXP.optiStim
+    pnet(OptiStimUDP, 'close');
+end
 
 clear mex;
 

@@ -8,9 +8,14 @@ function MouseBallExp(offline_in)
 %           MouseBallExp(1): To run/debug on computers that not connected
 %           to the mouse ball or calibrated
 
-[~, rig] = system('hostname'); rig = rig((rig ~= 10)); % to remove the CR at the end
-
-if strfind(rig, 'ZAMBONI')
+% [~, rig] = system('hostname'); rig = rig((rig ~= 10)); % to remove the CR at the end
+% 
+% if strfind(rig, 'ZAMBONI')
+%     clear all;
+% end
+% the problem is apparently with matlab version, and not rig
+v = ver('Matlab');
+if str2double(v.Version)>=9.3
     clear all;
 end
 
@@ -19,6 +24,7 @@ global BallUDPPort;    % the UDP port
 global ScanImageUDP;  % the UDP port
 global EyeCameraUDP;  % the UDP port
 global TimelineUDP;  % the UDP port
+global OptiStimUDP; 
 global SYNC;        % synchronization square
 global MYSCREEN;    % screen info
 global OFFLINE;
@@ -37,8 +43,8 @@ end
 
 clear mex
 
-EXP = setExperimentPars; %is this needed?  
-
+% EXP = setExperimentPars; %is this needed?  
+createExpRef; % this will also create EXP
 
 %% Initialize IP addresses and UDP communication
 Screen('Preference', 'SkipSyncTests', 1);
@@ -49,6 +55,7 @@ if strfind(RIGNAME, 'ZMAZE')
     ScanImageIP='zscope';
     TimelineIP='zcamp3';
     EyeCameraIP='zquad';
+    OptiStimIP = 'zcamp3';
     daqVendorName = 'ni'; % this name is used for 64-bit interface
     aoDeviceID='Dev1';
     aoValveChannel = 'ao0';
@@ -65,7 +72,7 @@ else
     daqVendorName = 'ni'; % this name is used for 64-bit interface
     aoDeviceID='Dev1';
     aoValveChannel = 'ao0';  
-    dioDiviceID='Dev1';
+    dioDeviceID='Dev1';
     dioCh=1;
     dioPort=0;
     optiStimChanInd=1;
@@ -91,7 +98,13 @@ if ~OFFLINE
     % this port is for eye-tracking camera
     EyeCameraUDP  = pnet('udpsocket', 1001);
     pnet(EyeCameraUDP, 'udpconnect', EyeCameraIP, 1001);
-    
+
+    % this port is for optical stimulation set up
+    if EXP.optiStim
+        OptiStimUDP  = pnet('udpsocket', 1001);
+        pnet(OptiStimUDP, 'udpconnect', OptiStimIP, 1002);
+    end
+
 end
 
 % initialize DAQ-----------------------------------------------------------
@@ -111,7 +124,7 @@ end
 fprintf('preparing the screen\n');
 [MYSCREEN, SYNC] = prepareScreen; 
 %Screen('BlendFunction', MYSCREEN.windowPtr, GL.SRC_ALPHA, GL.ONE);
-HideCursor; % usually done in ltScreenInitialize
+% HideCursor; % moved to sessionStart
 
 %
 %=========================================================================%

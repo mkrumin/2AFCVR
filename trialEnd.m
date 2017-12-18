@@ -17,6 +17,7 @@ global DIRS;
 global ScanImageUDP;
 global EyeCameraUDP;
 global TimelineUDP;
+global OptiStimUDP;
 global OFFLINE
 global EXPREF
 global SAVE2SERVER
@@ -80,6 +81,15 @@ if ~OFFLINE
     
     pnet(TimelineUDP, 'write', msgString);
     pnet(TimelineUDP, 'writePacket');
+    
+    if EXP.optiStim
+        msgStruct = struct('instruction', 'ZapStop', 'ExpRef', EXPREF);
+        msgJson = savejson('msg', msgStruct);
+        
+        pnet(OptiStimUDP, 'write', msgJson);
+        pnet(OptiStimUDP, 'writePacket');
+    end
+
 end
 
 if TRIAL.info.no == EXP.maxNTrials || TRIAL.info.abort == 1
