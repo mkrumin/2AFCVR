@@ -20,6 +20,8 @@ global EXPREF;
 global OFFLINE;
 global SESSION;
 global EXP;
+global DIRS;
+
 animalName = regexp(EXPREF, '_([A-Za-z]*\d+)$', 'tokens', 'once');
 
 % cleans up and exits state system
@@ -90,11 +92,20 @@ end
 
 fhandle = []; % exit state system
 
+%move local to zubjects server
+try
+    if ~isdir(DIRS.serverFolder)
+        mkdir(DIRS.serverFolder);
+    end
+    copyfile(fullfile(DIRS.localFolder,DIRS.fileName),fullfile(DIRS.serverFolder,DIRS.fileName)); 
+catch
+    warning('There was a problem creating the folder %s on the server', DIRS.serverFolder);
+end
+
 if strfind(animalID, 'fake')
     
 else
     fprintf('Saving to Alyx..\n')
-    addpath(genpath('C:\Users\Experiment\Documents\MATLAB\Alyx'));
     onLoad;
     
     %     alyxData.user = 'julie';

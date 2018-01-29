@@ -39,7 +39,7 @@ if TRIAL.info.no > 0
     TRIAL.posdata=TRIAL.posdata(1:TRIAL.info.epoch, :);
     TRIAL.time=TRIAL.time(1:TRIAL.info.epoch, :);
     
-    s = fullfile(DIRS.serverFolder, sprintf('%s_trial%03d', basename, TRIAL.info.no));
+%     s = fullfile(DIRS.serverFolder, sprintf('%s_trial%03d', basename, TRIAL.info.no));
     slocal = fullfile(DIRS.localFolder, sprintf('%s_trial%03d', basename, TRIAL.info.no));
     try
         save(slocal, 'TRIAL', 'EXP');
@@ -48,15 +48,15 @@ if TRIAL.info.no > 0
     end
     
     SESSION.allTrials(TRIAL.info.no)=TRIAL;
-    s = fullfile(DIRS.serverFolder, DIRS.fileName);
+%     s = fullfile(DIRS.serverFolder, DIRS.fileName);
     slocal = fullfile(DIRS.localFolder, DIRS.fileName);
-    if SAVE2SERVER
-        try
-            save(s, 'EXP', 'SESSION');
-        catch
-            warning('There was a problem saving to the \\zserver');
-        end
-    end
+%     if SAVE2SERVER
+%         try
+%             save(s, 'EXP', 'SESSION');
+%         catch
+%             warning('There was a problem saving to the \\zserver');
+%         end
+%     end
     try
         save(slocal, 'EXP', 'SESSION');
     catch
