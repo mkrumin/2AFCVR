@@ -109,12 +109,7 @@ else
     onLoad;
     
     %     alyxData.user = 'julie';
-    myAlyx = alyx.loginWindow();
-    
-    alyxData.subject = animalName{1}; % note lower-case "subject", it is case sensitive
-    alyxData.water_administered = waterAmount; %units of mL
-    alyxData.hydrogel = false;
-    
-    newWater = alyx.postData(myAlyx, 'water-administrations', alyxData);
+    ai = Alyx;
+    ai.postWater(animalName{1},waterAmount, now, false);
     fprintf('%05.3f ml water administered\n%s\n', waterAmount, newWater.url)
 end
