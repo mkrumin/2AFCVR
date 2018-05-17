@@ -108,8 +108,7 @@ else
     fprintf('Saving to Alyx..\n')
     onLoad;
     
-    %     alyxData.user = 'julie';
     ai = Alyx;
     ai.postWater(animalName{1},waterAmount, now, false);
-    fprintf('%05.3f ml water administered\n%s\n', waterAmount, newWater.url)
+    fprintf('%05.3f ml water administered\n', waterAmount)
 end
