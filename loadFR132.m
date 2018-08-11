@@ -1,13 +1,13 @@
-function Exp = loadDefaultPars
+function Exp = loadFR132()
 
 
 %% frequently changed parameters go here
 smallRewardAmount = 0.002;
 largeRewardAmount = 0.004;
-timeOut = 45; % [sec] trial times out after this number of seconds
+timeOut = 90; % [sec] trial times out after this number of seconds
 smallRewardValveTime = getValveTime(smallRewardAmount); % should be calibrated to give ~2ul reward; set by MK 2017
 largeRewardValveTime = getValveTime(largeRewardAmount); % should be calibrated to give ~4ul reward; set by MK 2017
-rewardDistance = Inf;%48; % give intermediate rewards every 'rewardDistance' cm of travel
+rewardDistance = Inf;%48; 35 % give intermediate rewards every 'rewardDistance' cm of travel
 
 stimType = 'BAITED'; % 'BAITED', 'RANDOM', 'ALTERNATING', 'BOTH', 'REPLAY', 'INTERLIEVED', 'REPLAY_SCRAMBLED' 
 contrasts = [25 50]; % contrast levels of the gratings [0 6 12 25 50]
@@ -19,7 +19,7 @@ fadeInFrames = 15;
 
 optiStim = 0;
 if optiStim
-    listOfPoints = getOptiStimList('default');
+    listOfPoints = getOptiStimList('FR132');
 else
     listOfPoints = [];
 end

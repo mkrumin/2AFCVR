@@ -33,8 +33,8 @@ ListenChar(2);
 % using unity gain in the setExperimentPars()).
 % these parameters should be calibrated from time to time on every rig
 if ~isempty(strfind(RIGNAME, 'ZAMBONI'))
-    BALL_TO_DEGREE = 1/100;%1/20000*360;
-    BALL_TO_ROOM = 1/70;
+    BALL_TO_DEGREE = 1/12;%1/20000*360;
+    BALL_TO_ROOM = 1/65;
     PI_OVER_180 = pi/180;
 elseif ~isempty(strfind(RIGNAME, 'ZMAZE'))
     BALL_TO_DEGREE =1/8.3;%1/20000*360;
@@ -214,6 +214,12 @@ try
         dbx = freezeOver*nansum([dbx 0]).*BALL_TO_ROOM.*EXP.zGain;
         day = freezeOver*nansum([day 0]).*BALL_TO_DEGREE*PI_OVER_180*EXP.aGain; %unused, because dby encodes the same information
         dby = freezeOver*nansum([dby 0]).*BALL_TO_DEGREE*PI_OVER_180*EXP.aGain;
+        
+        if isfield(EXP, 'ballBias')
+%             fprintf('%6.4f [rad] -->', dby);
+            dby = dby + dbx/100 * EXP.ballBias * pi/180;
+%             fprintf('%6.4f [rad]\n', dby);
+        end
         
         if isequal(EXP.stimType, 'REPLAY') %%
             TRIAL.posdata(count,T)=SESSION2REPLAY.allTrials(TRIAL.info.no).posdata(count,T);

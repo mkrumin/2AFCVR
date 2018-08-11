@@ -1,4 +1,4 @@
-function Exp = loadDefaultPars
+function Exp = loadDEFAULT
 
 
 %% frequently changed parameters go here
@@ -19,11 +19,14 @@ fadeInFrames = 15;
 
 optiStim = 0;
 if optiStim
-    listOfPoints = getOptiStimList('default');
+    funName = mfilename;
+    animalName = upper(funName(5:end)); % cut out the 'load' word
+    listOfPoints = getOptiStimList(animalName);
 else
     listOfPoints = [];
 end
 
+ballBias = 0; % deg/meter
 %% definition of the whole structure
 Exp = struct('date', date,...                   %date of the experiment
              'maxNTrials', 500,...              %max number of trials within a session
@@ -73,6 +76,7 @@ Exp = struct('date', date,...                   %date of the experiment
              'zGain',-1,...                     % gain in the direction into(or out of) the room
              'xGain',-1*0,...                     % gain of sideway movement
              'aGain', aGain,...                   % gain of rotation angle
+             'ballBias', ballBias, ...
 ... texture related
              'textureFile', 'textures',...      % WHITENOISE, COSGRATING, GRAY      
              'leftWallText','WHITENOISE',...

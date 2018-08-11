@@ -15,7 +15,7 @@ function MouseBallExp(offline_in)
 % end
 % the problem is apparently with matlab version, and not rig
 v = ver('Matlab');
-if str2double(v.Version)>=9.3
+if str2double(v.Version)>=9.1
     clear all;
 end
 
@@ -46,6 +46,11 @@ clear mex
 % EXP = setExperimentPars; %is this needed?  
 createExpRef; % this will also create EXP
 
+[animalID, ~, ~] = dat.expRefToMpep(EXP.expRef);
+if isequal(upper(animalID), 'FAKE')
+    SAVE2SERVER = false;
+end
+
 %% Initialize IP addresses and UDP communication
 Screen('Preference', 'SkipSyncTests', 1);
 [~, RIGNAME] = system('hostname'); 
@@ -69,6 +74,7 @@ else
     TimelineIP='1.1.1.1';
     IntrinsicCameraIP='1.1.1.1';
     EyeCameraIP='1.1.1.1';
+    OptiStimIP = 'zoophile';
     daqVendorName = 'ni'; % this name is used for 64-bit interface
     aoDeviceID='Dev1';
     aoValveChannel = 'ao0';  

@@ -20,7 +20,7 @@ global EXPREF;
 global OFFLINE;
 global SESSION;
 global EXP;
-animalName = regexp(EXPREF, '_([A-Za-z]*\d+)$', 'tokens', 'once');
+% animalName = regexp(EXPREF, '_([A-Za-z]*\d+)$', 'tokens', 'once');
 
 % cleans up and exits state system
 
@@ -90,20 +90,21 @@ end
 
 fhandle = []; % exit state system
 
-if strfind(animalID, 'fake')
-    
+if strfind(upper(animalID), 'FAKE')
+    % do nothing
 else
     fprintf('Saving to Alyx..\n')
-    addpath(genpath('C:\Users\Experiment\Documents\MATLAB\Alyx'));
-    onLoad;
+%     if exist('C:\Users\Experiment\Documents\MATLAB\Alyx', 'dir')
+%         addpath(genpath('C:\Users\Experiment\Documents\MATLAB\Alyx'));
+%     else
+%         addpath(genpath('C:\Users\Experiment\Documents\GitHub\alyx-matlab'));
+%     end
+%     onLoad;
     
     %     alyxData.user = 'julie';
-    myAlyx = alyx.loginWindow();
+    myAlyx = Alyx;
     
-    alyxData.subject = animalName{1}; % note lower-case "subject", it is case sensitive
-    alyxData.water_administered = waterAmount; %units of mL
-    alyxData.hydrogel = false;
+    newWater = myAlyx.postWater(animalID, waterAmount, now, false);
     
-    newWater = alyx.postData(myAlyx, 'water-administrations', alyxData);
     fprintf('%05.3f ml water administered\n%s\n', waterAmount, newWater.url)
 end

@@ -1,25 +1,27 @@
-function Exp = loadDefaultPars
+function Exp = loadMK032()
 
 
 %% frequently changed parameters go here
 smallRewardAmount = 0.002;
-largeRewardAmount = 0.004;
+largeRewardAmount = 0.003;
 timeOut = 45; % [sec] trial times out after this number of seconds
 smallRewardValveTime = getValveTime(smallRewardAmount); % should be calibrated to give ~2ul reward; set by MK 2017
 largeRewardValveTime = getValveTime(largeRewardAmount); % should be calibrated to give ~4ul reward; set by MK 2017
 rewardDistance = Inf;%48; % give intermediate rewards every 'rewardDistance' cm of travel
 
 stimType = 'BAITED'; % 'BAITED', 'RANDOM', 'ALTERNATING', 'BOTH', 'REPLAY', 'INTERLIEVED', 'REPLAY_SCRAMBLED' 
-contrasts = [25 50]; % contrast levels of the gratings [0 6 12 25 50]
+contrasts = [50]; % contrast levels of the gratings [0 6 12 25 50]
 aGain = -0.2;   % gain of rotation angle
 restrict = 1; % 1 if we want to restrict the range of the head direction. 
 % if set to be less than pi/2 it will not allow the animal to FAIL the task
-restrictAngle = pi/6; % pi/4=+-45 degrees, pi/6 = +-30 degrees
+restrictAngle = pi/2; % pi/4=+-45 degrees, pi/6 = +-30 degrees
 fadeInFrames = 15;
 
 optiStim = 0;
 if optiStim
-    listOfPoints = getOptiStimList('default');
+    funName = mfilename;
+    animalName = upper(funName(5:end)); % cut out the 'load' word
+    listOfPoints = getOptiStimList(animalName);
 else
     listOfPoints = [];
 end
@@ -35,8 +37,8 @@ Exp = struct('date', date,...                   %date of the experiment
              'restrictionAngle', restrictAngle,...       % pi/4 means +-45 degrees from heading forward
              'grayScreenDur', 2.0,...           % STOP time (the duration of the gray screen)
  ... imaging related parameters
-             'syncSquareSizeY', 100,...          % Y size of synchroniztation square read by photodiode
-             'syncSquareSizeX', 400,...          % X size of synchroniztation square read by photodiode
+             'syncSquareSizeY', 1,...          % Y size of synchroniztation square read by photodiode
+             'syncSquareSizeX', 4,...          % X size of synchroniztation square read by photodiode
              'flipSides', 0, ...                % whether to flip right and left sides (useful for undistortion)
              'doUndistortion', 1, ...           % whether to apply semicylindrical undistortion
  ... reward related parameters

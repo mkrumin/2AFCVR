@@ -16,6 +16,9 @@ switch lower(rigName)
 %         calbration on 2017-11-30
         water = [1.088, 1.787, 2.98, 4.159]*1e-3;
         dur = [0.0475, 0.0677, 0.0992, 0.1292];
+    case 'zamboni'
+        water = [2.2, 3.1, 3.9, 5.8]*1e-3;
+        dur = [0.07, 0.0987, 0.13, .2041];
     otherwise
         msg = ...
             sprintf('No valve calibration data for rig ''%s'', loading default values...\n', upper(rigName));
