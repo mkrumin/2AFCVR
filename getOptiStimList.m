@@ -56,7 +56,23 @@ switch upper(animalName)
         % default values - PPC & V1
         ML = {[-1.7, 1.7]; [-2.5, 2.5]};
         AP = {[-2, -2]; [-3.5 -3.5]};
+        laserPower = {[8 8]; [8 8]};
+        stimType = {'POSITION'};
+        onset = [10];
+        offset = [110];
+    case 'MK033'
+        % default values - PPC & V1
+        ML = {[-1.7, 1.7]; [-2.5, 2.5]};
+        AP = {[-2, -2]; [-3.5 -3.5]};
         laserPower = {[4 4]; [4 4]};
+        stimType = {'POSITION'};
+        onset = [10];
+        offset = [110];
+    case 'MK032'
+        % default values - PPC & V1
+        ML = {[-1.7, 1.7]; [-2.5, 2.5]};
+        AP = {[-2, -2]; [-3.5 -3.5]};
+        laserPower = {[8 8]; [8 8]};
         stimType = {'POSITION'};
         onset = [10];
         offset = [110];
