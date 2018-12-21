@@ -104,7 +104,7 @@ else
     %     alyxData.user = 'julie';
     myAlyx = Alyx;
     
-    newWater = myAlyx.postWater(animalID, waterAmount, now, false);
+    newWater = myAlyx.postWater(animalID, waterAmount, now, 'Water 15% Sucrose');
     
     fprintf('%05.3f ml water administered\n%s\n', waterAmount, newWater.url)
 end
