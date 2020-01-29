@@ -10,11 +10,11 @@ largeRewardValveTime = getValveTime(largeRewardAmount); % should be calibrated t
 rewardDistance = Inf;%48; % give intermediate rewards every 'rewardDistance' cm of travel
 
 stimType = 'BAITED'; % 'BAITED', 'RANDOM', 'ALTERNATING', 'BOTH', 'REPLAY', 'INTERLIEVED', 'REPLAY_SCRAMBLED' 
-contrasts = [0 6 12 25 50]; % contrast levels of the gratings [0 6 12 25 50]
+contrasts = [25]; % contrast levels of the gratings [0 6 12 25 50]
 aGain = -0.2;   % gain of rotation angle
 restrict = 1; % 1 if we want to restrict the range of the head direction. 
 % if set to be less than pi/2 it will not allow the animal to FAIL the task
-restrictAngle = 87*pi/180; % pi/4=+-45 degrees, pi/6 = +-30 degrees
+restrictAngle = 60*pi/180; % pi/4=+-45 degrees, pi/6 = +-30 degrees
 fadeInFrames = 15;
 
 optiStim = 0;
@@ -26,7 +26,10 @@ else
     listOfPoints = [];
 end
 
-ballBias = 15; % deg/meter
+ballBias = 0; % deg/meter
+
+fractionUseWhiskerControl = 0.5;
+fractionWallsVisible = 0.5;
 
 %% definition of the whole structure
 Exp = struct('date', date,...                   %date of the experiment
@@ -64,6 +67,8 @@ Exp = struct('date', date,...                   %date of the experiment
              'texturePatchSize', 256, ...       % size of a single texture patch
              'freezeDuration', 0.2, ...         % for how long to show the first frame of the maze before allowing to move
              'fadeInFrames', fadeInFrames, ...
+             'fractionWallsVisible', fractionWallsVisible, ... % fraction of trials with the maze being visible
+             'fractionUseWhiskerControl', fractionUseWhiskerControl, ...  % fraction of trials with whiskers feedback           
 ... optical stimulation related parameters
              'optiStim', optiStim, ...                 % Do we do inactivation/stimulation?
              'optiStimList', listOfPoints, ...  % a structure with the list of stimulation locations 

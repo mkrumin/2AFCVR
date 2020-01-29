@@ -25,6 +25,9 @@ global TimelineUDP;
 global OptiStimUDP;
 global EXPREF;
 
+% move servo to neutral position
+moveStage(Inf, Inf);
+
 TRIAL_COUNT = TRIAL_COUNT +1;
 
 info = [];
