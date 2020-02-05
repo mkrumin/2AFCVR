@@ -50,7 +50,7 @@ oBeepWRONG = audioplayer(beepWRONG, sRate);
 if OFFLINE
     start = 1;
 else
-    button = MFquestdlg([1.15 0.5], 'Ready to go?', '', 'GO!', 'Abort', 'Abort');
+    button = MFquestdlg([-0.2 0.5], 'Ready to go?', '', 'GO!', 'Abort', 'Abort');
     if isequal(button, 'GO!')
         start = 1;
     else

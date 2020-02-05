@@ -90,6 +90,8 @@ end
 
 fhandle = []; % exit state system
 
+% return; %skip the Alyx thing for now
+
 if strfind(upper(animalID), 'FAKE')
     % do nothing
 else
@@ -104,7 +106,7 @@ else
     %     alyxData.user = 'julie';
     myAlyx = Alyx;
     
-    newWater = myAlyx.postWater(animalID, waterAmount, now, 'Water 15% Sucrose');
+    newWater = myAlyx.postWater(animalID, waterAmount, now, 'Water 10% Sucrose');
     
     fprintf('%05.3f ml water administered\n%s\n', waterAmount, newWater.url)
 end
