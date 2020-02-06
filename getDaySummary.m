@@ -134,7 +134,7 @@ for iSession = 1:nSessions
     if pValue>0.00005
         titStr{2} = sprintf('pVal = %6.4f, water = %5.3f [ml]', pValue, waterAmount(iSession));
     else
-        titStr{2} = sprintf('pVal = %d, water = %5.3f [ml]', pValue, waterAmount(iSession));
+        titStr{2} = sprintf('pVal = %3.1d, water = %5.3f [ml]', pValue, waterAmount(iSession));
     end
     title(titStr);
     set(gca, 'XTick', cc)
@@ -156,7 +156,7 @@ for iSession = 1:nSessions
     
     % this is a psychometric function with symmetric lapse rate
     [ pars, L ] = mle_fit_psycho([cc; nn; pp],'erf_psycho');
-    plot(c, erf_psycho(pars, c), 'r', 'LineWidth', 2)
+%     plot(c, erf_psycho(pars, c), 'r', 'LineWidth', 2)
     
     subplot(nRows, nColumns, 2*iSession);
     cla;
