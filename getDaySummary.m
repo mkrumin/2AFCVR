@@ -121,7 +121,7 @@ for iSession = 1:nSessions
     end
     
     % get confidence intervals of the binomial distribution
-    alpha = 0.1;
+    alpha = 0.05;
     [prob, pci] = binofit(round(pp.*nn), nn, alpha);
     figure(figureHandle);
     subplot(nRows, nColumns, 2*(iSession-1)+1);
@@ -146,17 +146,17 @@ for iSession = 1:nSessions
     box off
     
     % fit a psychometric curve (asymmetric lapse rate)
-    nfits = 10;
-    parstart = [ mean(cc), 3, 0.05, 0.05 ];
-    parmin = [min(cc) 0 0 0];
-    parmax = [max(cc) 10 0.40 0.4];
-    [ pars, L ] = mle_fit_psycho([cc; nn; pp],'erf_psycho_2gammas', parstart, parmin, parmax, nfits);
-    c = -50:50;
-    plot(c, erf_psycho_2gammas(pars, c), 'k', 'LineWidth', 2)
-    
-    % this is a psychometric function with symmetric lapse rate
-    [ pars, L ] = mle_fit_psycho([cc; nn; pp],'erf_psycho');
-    plot(c, erf_psycho(pars, c), 'r', 'LineWidth', 2)
+%     nfits = 10;
+%     parstart = [ mean(cc), 3, 0.05, 0.05 ];
+%     parmin = [min(cc) 0 0 0];
+%     parmax = [max(cc) 10 0.40 0.4];
+%     [ pars, L ] = mle_fit_psycho([cc; nn; pp],'erf_psycho_2gammas', parstart, parmin, parmax, nfits);
+%     c = -50:50;
+%     plot(c, erf_psycho_2gammas(pars, c), 'k', 'LineWidth', 2)
+%     
+%     % this is a psychometric function with symmetric lapse rate
+%     [ pars, L ] = mle_fit_psycho([cc; nn; pp],'erf_psycho');
+%     plot(c, erf_psycho(pars, c), 'r', 'LineWidth', 2)
     
     subplot(nRows, nColumns, 2*iSession);
     cla;
@@ -207,10 +207,16 @@ if nSessions>1
     for iCC=1:length(cc)
         indices = (allContrast == cc(iCC)) & allFinished;
         pp(iCC) = sum(allBehavior(indices)=='R')/sum(indices);
+        nn(iCC) = sum(indices);
     end
-    subplot(nRows, nColumns, nSessions+1);
+    
+    [prob, pci] = binofit(round(pp.*nn), nn, alpha);
+    figure(figureHandle);
+    subplot(nRows, nColumns, 2*nSessions+1);
     cla;
-    plot(cc, pp, 'o');
+    errorbar(cc, pp, pp-pci(:,1)', pp-pci(:,2)', 'o')
+
+%     plot(cc, pp, 'o');
     title(sprintf('All Sessions, nTrials = %d', sum(nTrials)));
     set(gca, 'XTick', cc)
     ylim([0 1]);
