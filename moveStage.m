@@ -1,4 +1,4 @@
-function moveStage(dLeft, dRight)
+function [stagePos, Vout] = moveStage(dLeft, dRight)
 
 % dLeft - distance of the wall to the left whiskers
 % dRight - distance of the wall to the right whiskers

@@ -282,13 +282,17 @@ try
         if SESSION.useWhiskerControl(TRIAL.info.no)
             try
                 [dL, dR] = wallDistance(TRIAL.posdata(count, :));
-                moveStage(dL, dR);
+                [stagePos, Vout] = moveStage(dL, dR);
             catch
                 % do nothing, stay where you are
             end
         else
-            moveStage(Inf, Inf);
+            [stagePos, Vout] = moveStage(Inf, Inf);
+            dL = Inf;
+            dR = Inf;
         end
+        TRIAL.glassWallsData(count, :) = [dL, dR, stagePos, Vout];
+        
         %% check if not going backwards in the main corridor
         % MK - timeout the animal if it goes backwards (only in the main
         % corridor)
