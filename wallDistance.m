@@ -23,37 +23,109 @@ z2=EXP.roomLength; % coordinate of the end wall
 xx = [-x1, -x1, -x2, -x2, x2, x2, x1, x1, -x1];
 zz = [z0, z1, z1, z2, z2, z1, z1, z0, z0];
 
-%%
-% x = (rand - 0.5)*EXP.corridorWidth;
-% z = rand*EXP.roomLength;
-% th = rand*360 /180 * pi;
-
 scalingFactor = 10;
 padding = 10;
 
 xx = xx * scalingFactor; % transform to millimeters
 zz = zz * scalingFactor; % transform to millimeters
+
 minX = min(xx);
 minZ = min(zz);
-x = x * scalingFactor - minX +padding;
-z = z * scalingFactor - minZ + padding;
+
 xx = xx - minX + padding;
 zz = zz - minZ + padding;
 nX = max(xx) + padding;
 nZ = max(zz) + padding;
 
+%%
+% x = (rand - 0.5)*EXP.corridorWidth;
+% z = rand*EXP.roomLength;
+% th = (rand - 0.5) *  pi;
+% th = 2*pi/6;
+
+xPix = x * scalingFactor - minX +padding;
+zPix = z * scalingFactor - minZ + padding;
+
 % this is the vector of mouse heading
 nVector = [cos(-th + pi/2), sin(-th + pi/2)];
 
 bw = poly2mask(xx,zz,nZ,nX);
+% cla;
 % imshow(bw)
+% axis xy
 % hold on
 % plot(xx,zz,'b','LineWidth',2)
-% plot(x, z, 'ro')
+% plot(xPix, zPix, 'ro')
 u = nVector(1);
 v = nVector(2);
-% quiver(x, z, u, v, scalingFactor*5, 'MaxHeadSize', 5);
+% quiver(xPix, zPix, u, v, scalingFactor*15, 'MaxHeadSize', 1, 'LineWidth', 2);
+% hold off;
 
+angleRange = 20:5:135;
+t = 0:0.5:10*scalingFactor;
+dL = Inf;
+% Left whisker pad
+for rotAngle = -angleRange
+    phi = -rotAngle * pi / 180; % counter clockwise rotation is defined positive
+    nNew = [cos(phi),  - sin(phi); sin(phi), cos(phi)] * [u, v]';
+    uNew = nNew(1);
+    vNew = nNew(2);
+%     quiver(xPix, zPix, uNew, vNew, scalingFactor*10, 'MaxHeadSize', 0, 'Color', 'r');
+    xLine = xPix + t*uNew;
+    zLine = zPix + t*vNew;
+    profile = interp2(1:nX, 1:nZ, single(bw), xLine, zLine, 'linear');
+    delta = [0, abs(diff(profile > 0.5))];
+    tCrossing = t(find(delta, 1, 'first'));
+    if ~isempty(tCrossing)
+%         plot(xPix + uNew*tCrossing, zPix + vNew*tCrossing, 'c.', 'MarkerSize', 16);
+        if dL > tCrossing 
+            % keep the record of the shortest distance and direction
+            dL = tCrossing;
+            uLeft = uNew;
+            vLeft = vNew;
+        end
+    end
+end
+% Right whisker pad
+dR = Inf;
+for rotAngle = angleRange
+    phi = -rotAngle * pi / 180; % counter clockwise rotation is defined positive
+    nNew = [cos(phi),  - sin(phi); sin(phi), cos(phi)] * [u, v]';
+    uNew = nNew(1);
+    vNew = nNew(2);
+%     quiver(xPix, zPix, uNew, vNew, scalingFactor*10, 'MaxHeadSize', 0, 'Color', 'g');
+    xLine = xPix + t*uNew;
+    zLine = zPix + t*vNew;
+    profile = interp2(1:nX, 1:nZ, single(bw), xLine, zLine, 'linear');
+    delta = [0, abs(diff(profile > 0.5))];
+    tCrossing = t(find(delta, 1, 'first'));
+    if ~isempty(tCrossing)
+%         plot(xPix + uNew*tCrossing, zPix + vNew*tCrossing, 'c.', 'MarkerSize', 16);
+        if dR > tCrossing 
+            % keep the record of the shortest distance and direction
+            dR = tCrossing;
+            uRight = uNew;
+            vRight = vNew;
+        end
+    end
+end
+
+% if dL < dR
+%     plot(xPix + uLeft*dL, zPix + vLeft*dL, 'm.', 'MarkerSize', 30);
+% elseif dL > dR
+%     plot(xPix + uRight*dR, zPix + vRight*dR, 'm.', 'MarkerSize', 30);
+% else
+%     ; % do nothing
+% end
+
+dL = dL/scalingFactor;
+dR = dR/scalingFactor;
+
+% title({sprintf('X = %4.2f [cm], Z = %4.2f [cm], \\theta = %2.0f [deg]', x, z, th*180/pi); ...
+%     sprintf('dLeft = %4.2f [cm], dRight = %4.2f [cm]', dL, dR)});
+
+return;
+%%
 % the equation of line along the "whiskers' axis" - the line running
 % through the mouse position and perpendicular to its heading
 
