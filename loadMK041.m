@@ -3,18 +3,18 @@ function Exp = loadMK041()
 
 %% frequently changed parameters go here
 smallRewardAmount = 0.003;
-largeRewardAmount = 0.006;
+largeRewardAmount = 0.003;
 timeOut = 45; % [sec] trial times out after this number of seconds
 smallRewardValveTime = getValveTime(smallRewardAmount); % should be calibrated to give ~2ul reward; set by MK 2017
 largeRewardValveTime = getValveTime(largeRewardAmount); % should be calibrated to give ~4ul reward; set by MK 2017
 rewardDistance = 300;%48; % give intermediate rewards every 'rewardDistance' cm of travel
 
-stimType = 'BOTH'; % 'BAITED', 'RANDOM', 'ALTERNATING', 'BOTH', 'REPLAY', 'INTERLIEVED', 'REPLAY_SCRAMBLED' 
-contrasts = [50]; % contrast levels of the gratings [0 6 12 25 50]
+stimType = 'BAITED'; % 'BAITED', 'RANDOM', 'ALTERNATING', 'BOTH', 'REPLAY', 'INTERLIEVED', 'REPLAY_SCRAMBLED' 
+contrasts = [6 12 25 50]; % contrast levels of the gratings [0 6 12 25 50]
 aGain = -0.2;   % gain of rotation angle
 restrict = 1; % 1 if we want to restrict the range of the head direction. 
 % if set to be less than pi/2 it will not allow the animal to FAIL the task
-restrictAngle = 90*pi/180; % pi/4=+-45 degrees, pi/6 = +-30 degrees
+restrictAngle = 60*pi/180; % pi/4=+-45 degrees, pi/6 = +-30 degrees
 fadeInFrames = 15;
 
 optiStim = 0;
