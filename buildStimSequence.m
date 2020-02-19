@@ -44,6 +44,9 @@ end
 % then build the contrast sequence
 
 SESSION.contrastSequence=nan(EXP.maxNTrials, 1);
+% select random trials to use 
+SESSION.useWhiskerControl = rand(EXP.maxNTrials, 1) <= EXP.fractionUseWhiskerControl;
+SESSION.showWalls = rand(EXP.maxNTrials, 1) <= EXP.fractionWallsVisible;
 
 switch EXP.stimType
     case {'RANDOM', 'INTERLIEVED', 'BAITED', 'ALTERNATING', 'BOTH'}

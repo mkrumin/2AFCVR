@@ -148,7 +148,12 @@ try
         
         if trialActive
             TRIAL.trialActive(count)=trialActive;
-            DrawScene(count);
+            if SESSION.showWalls(TRIAL.info.no)
+                DrawScene(count);
+            else
+                % set alphaValue to 0, so everything will be plain gray
+                DrawScene(count, 0);
+            end
         end
         
         % Finish OpenGL rendering into PTB window and check for OpenGL errors.
@@ -272,6 +277,21 @@ try
                 TRIAL.posdata(count, T)=sign(TRIAL.posdata(count, T))*EXP.restrictionAngle;
             end
         end
+        
+        %% move the whisker feedback stage
+        if SESSION.useWhiskerControl(TRIAL.info.no)
+            try
+                [dL, dR] = wallDistance(TRIAL.posdata(count, :));
+                [stagePos, Vout] = moveStage(dL, dR);
+            catch
+                % do nothing, stay where you are
+            end
+        else
+            [stagePos, Vout] = moveStage(Inf, Inf);
+            dL = Inf;
+            dR = Inf;
+        end
+        TRIAL.glassWallsData(count, :) = [dL, dR, stagePos, Vout];
         
         %% check if not going backwards in the main corridor
         % MK - timeout the animal if it goes backwards (only in the main

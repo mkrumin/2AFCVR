@@ -35,7 +35,11 @@ end
 valveData=[padding; valveOpenVoltage*ones(nSamplesOpen, 1); padding];
 % padding with 5s to get to the minimum required (by DAQ) 6 samples
 daqSession.queueOutputData(valveData);
-daqSession.startBackground;
+% daqSession.startBackground;
+% force Matlab to wait until the reward is delivered
+% this is useful if we want to use another analog channel (from a different daq session)
+% immediately afterwards
+daqSession.startForeground;
 
 %% here is the old 32bit version based on AO for both optiStim and the reward valve
 
