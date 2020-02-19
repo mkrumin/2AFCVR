@@ -23,7 +23,7 @@ z2=EXP.roomLength; % coordinate of the end wall
 xx = [-x1, -x1, -x2, -x2, x2, x2, x1, x1, -x1];
 zz = [z0, z1, z1, z2, z2, z1, z1, z0, z0];
 
-scalingFactor = 10;
+scalingFactor = 5;
 padding = 10;
 
 xx = xx * scalingFactor; % transform to millimeters
@@ -61,7 +61,7 @@ v = nVector(2);
 % quiver(xPix, zPix, u, v, scalingFactor*15, 'MaxHeadSize', 1, 'LineWidth', 2);
 % hold off;
 
-angleRange = 20:5:135;
+angleRange = 20:5:120;
 t = 0:0.5:10*scalingFactor;
 dL = Inf;
 % Left whisker pad
