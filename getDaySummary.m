@@ -134,7 +134,7 @@ for iSession = 1:nSessions
     if pValue>0.00005
         titStr{2} = sprintf('pVal = %6.4f, water = %5.3f [ml]', pValue, waterAmount(iSession));
     else
-        titStr{2} = sprintf('pVal = %d, water = %5.3f [ml]', pValue, waterAmount(iSession));
+        titStr{2} = sprintf('pVal = %3.1d, water = %5.3f [ml]', pValue, waterAmount(iSession));
     end
     title(titStr);
     set(gca, 'XTick', cc)
@@ -145,7 +145,7 @@ for iSession = 1:nSessions
     axis square
     box off
     
-    % fit a psychometric curve (asymmetric lapse rate)
+% fit a psychometric curve (asymmetric lapse rate)
 %     nfits = 10;
 %     parstart = [ mean(cc), 3, 0.05, 0.05 ];
 %     parmin = [min(cc) 0 0 0];

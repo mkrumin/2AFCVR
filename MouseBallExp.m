@@ -15,11 +15,12 @@ function MouseBallExp(offline_in)
 % end
 % the problem is apparently with matlab version, and not rig
 v = ver('Matlab');
-if str2double(v.Version)>=9.3
+if str2double(v.Version)>=9.1
     clear all;
 end
 
 global daqSession;     % analog output for valve triggering & light stimulation(instead of DIO)
+global servoDaqSession;     % analog output for moving the servo motor
 global BallUDPPort;    % the UDP port
 global ScanImageUDP;  % the UDP port
 global EyeCameraUDP;  % the UDP port
@@ -46,6 +47,11 @@ clear mex
 % EXP = setExperimentPars; %is this needed?  
 createExpRef; % this will also create EXP
 
+[animalID, ~, ~] = dat.expRefToMpep(EXP.expRef);
+if isequal(upper(animalID), 'FAKE')
+    SAVE2SERVER = false;
+end
+
 %% Initialize IP addresses and UDP communication
 Screen('Preference', 'SkipSyncTests', 1);
 [~, RIGNAME] = system('hostname'); 
@@ -69,9 +75,11 @@ else
     TimelineIP='1.1.1.1';
     IntrinsicCameraIP='1.1.1.1';
     EyeCameraIP='1.1.1.1';
+    OptiStimIP = 'zoophile';
     daqVendorName = 'ni'; % this name is used for 64-bit interface
     aoDeviceID='Dev1';
     aoValveChannel = 'ao0';  
+    aoServoChannel = 'ao1';  
     dioDeviceID='Dev1';
     dioCh=1;
     dioPort=0;
@@ -115,6 +123,12 @@ if ~OFFLINE
     % defining the Analog Output object for the valve (for precise timing)
     daqSession.addAnalogOutputChannel(aoDeviceID, aoValveChannel, 'Voltage');
     daqSession.outputSingleScan(valveClosedVoltage);
+    
+    servoDaqSession = daq.createSession(daqVendorName);
+    servoDaqSession.Rate = 10e3;
+    % defining the Analog Output object for the valve (for precise timing)
+    servoDaqSession.addAnalogOutputChannel(aoDeviceID, aoServoChannel, 'Voltage');
+    servoDaqSession.outputSingleScan(parkServoVoltage);
 end
 
 % prepare screen-----------------------------------------------------------

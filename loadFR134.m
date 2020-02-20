@@ -1,10 +1,10 @@
-function Exp = loadDefaultPars
+function Exp = loadFR134()
 
 
 %% frequently changed parameters go here
 smallRewardAmount = 0.002;
 largeRewardAmount = 0.004;
-timeOut = 45; % [sec] trial times out after this number of seconds
+timeOut = 3600; % [sec] trial times out after this number of seconds
 smallRewardValveTime = getValveTime(smallRewardAmount); % should be calibrated to give ~2ul reward; set by MK 2017
 largeRewardValveTime = getValveTime(largeRewardAmount); % should be calibrated to give ~4ul reward; set by MK 2017
 rewardDistance = Inf;%48; % give intermediate rewards every 'rewardDistance' cm of travel
@@ -17,12 +17,18 @@ restrict = 1; % 1 if we want to restrict the range of the head direction.
 restrictAngle = pi/6; % pi/4=+-45 degrees, pi/6 = +-30 degrees
 fadeInFrames = 15;
 
-optiStim = 0;
+ballBias = 0; % deg/meter
+
+optiStim = 1;
 if optiStim
-    listOfPoints = getOptiStimList('default');
+    funName = mfilename;
+    animalName = upper(funName(5:end)); % cut out the 'load' word
+    listOfPoints = getOptiStimList(animalName);
 else
     listOfPoints = [];
 end
+
+ballBias = -10; % deg/meter
 
 %% definition of the whole structure
 Exp = struct('date', date,...                   %date of the experiment
@@ -35,8 +41,8 @@ Exp = struct('date', date,...                   %date of the experiment
              'restrictionAngle', restrictAngle,...       % pi/4 means +-45 degrees from heading forward
              'grayScreenDur', 2.0,...           % STOP time (the duration of the gray screen)
  ... imaging related parameters
-             'syncSquareSizeY', 100,...          % Y size of synchroniztation square read by photodiode
-             'syncSquareSizeX', 400,...          % X size of synchroniztation square read by photodiode
+             'syncSquareSizeY', 1,...          % Y size of synchroniztation square read by photodiode
+             'syncSquareSizeX', 4,...          % X size of synchroniztation square read by photodiode
              'flipSides', 0, ...                % whether to flip right and left sides (useful for undistortion)
              'doUndistortion', 1, ...           % whether to apply semicylindrical undistortion
  ... reward related parameters

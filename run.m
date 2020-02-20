@@ -33,8 +33,8 @@ ListenChar(2);
 % using unity gain in the setExperimentPars()).
 % these parameters should be calibrated from time to time on every rig
 if ~isempty(strfind(RIGNAME, 'ZAMBONI'))
-    BALL_TO_DEGREE = 1/100;%1/20000*360;
-    BALL_TO_ROOM = 1/70;
+    BALL_TO_DEGREE = 1/12;%1/20000*360;
+    BALL_TO_ROOM = 1/65;
     PI_OVER_180 = pi/180;
 elseif ~isempty(strfind(RIGNAME, 'ZMAZE'))
     BALL_TO_DEGREE =1/8.3;%1/20000*360;
@@ -148,7 +148,12 @@ try
         
         if trialActive
             TRIAL.trialActive(count)=trialActive;
-            DrawScene(count);
+            if SESSION.showWalls(TRIAL.info.no)
+                DrawScene(count);
+            else
+                % set alphaValue to 0, so everything will be plain gray
+                DrawScene(count, 0);
+            end
         end
         
         % Finish OpenGL rendering into PTB window and check for OpenGL errors.
@@ -215,6 +220,12 @@ try
         day = freezeOver*nansum([day 0]).*BALL_TO_DEGREE*PI_OVER_180*EXP.aGain; %unused, because dby encodes the same information
         dby = freezeOver*nansum([dby 0]).*BALL_TO_DEGREE*PI_OVER_180*EXP.aGain;
         
+        if isfield(EXP, 'ballBias')
+%             fprintf('%6.4f [rad] -->', dby);
+            dby = dby + dbx/100 * EXP.ballBias * pi/180;
+%             fprintf('%6.4f [rad]\n', dby);
+        end
+        
         if isequal(EXP.stimType, 'REPLAY') %%
             TRIAL.posdata(count,T)=SESSION2REPLAY.allTrials(TRIAL.info.no).posdata(count,T);
             TRIAL.posdata(count,X)=SESSION2REPLAY.allTrials(TRIAL.info.no).posdata(count,X);
@@ -266,6 +277,21 @@ try
                 TRIAL.posdata(count, T)=sign(TRIAL.posdata(count, T))*EXP.restrictionAngle;
             end
         end
+        
+        %% move the whisker feedback stage
+        if SESSION.useWhiskerControl(TRIAL.info.no)
+            try
+                [dL, dR] = wallDistance(TRIAL.posdata(count, :));
+                [stagePos, Vout] = moveStage(dL, dR);
+            catch
+                % do nothing, stay where you are
+            end
+        else
+            [stagePos, Vout] = moveStage(Inf, Inf);
+            dL = Inf;
+            dR = Inf;
+        end
+        TRIAL.glassWallsData(count, :) = [dL, dR, stagePos, Vout];
         
         %% check if not going backwards in the main corridor
         % MK - timeout the animal if it goes backwards (only in the main

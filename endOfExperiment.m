@@ -20,9 +20,6 @@ global EXPREF;
 global OFFLINE;
 global SESSION;
 global EXP;
-global DIRS;
-
-animalName = regexp(EXPREF, '_([A-Za-z]*\d+)$', 'tokens', 'once');
 
 % cleans up and exits state system
 
@@ -92,23 +89,24 @@ end
 
 fhandle = []; % exit state system
 
-%move local to zubjects server
-try
-    if ~isdir(DIRS.serverFolder)
-        mkdir(DIRS.serverFolder);
-    end
-    copyfile(fullfile(DIRS.localFolder,DIRS.fileName),fullfile(DIRS.serverFolder,DIRS.fileName)); 
-catch
-    warning('There was a problem creating the folder %s on the server', DIRS.serverFolder);
-end
+% return; %skip the Alyx thing for now
 
-if strfind(animalID, 'fake')
-    
+if strfind(upper(animalID), 'FAKE')
+    % do nothing
 else
     fprintf('Saving to Alyx..\n')
-    onLoad;
+%     if exist('C:\Users\Experiment\Documents\MATLAB\Alyx', 'dir')
+%         addpath(genpath('C:\Users\Experiment\Documents\MATLAB\Alyx'));
+%     else
+%         addpath(genpath('C:\Users\Experiment\Documents\GitHub\alyx-matlab'));
+%     end
+%     onLoad;
     
-    ai = Alyx;
-    ai.postWater(animalName{1},waterAmount, now, false);
-    fprintf('%05.3f ml water administered\n', waterAmount)
+    %     alyxData.user = 'julie';
+    myAlyx = Alyx;
+    
+    newWater = myAlyx.postWater(animalID, waterAmount, now, 'Water 10% Sucrose');
+    
+    fprintf('%05.3f ml water administered\n%s\n', waterAmount, newWater.url)
+
 end

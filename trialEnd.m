@@ -27,11 +27,13 @@ global SAVE2SERVER
 % (otherwise there is a larger inter-stimulus interval after the first
 % trial
 
+moveStage(Inf, Inf);
+
 [~, basename, ~] = fileparts(DIRS.fileName);
 
 if TRIAL.info.no==1
     %     zip(fullfile(DIRS.serverFolder, [basename, '_code']), '*.m*');
-    zip(fullfile(DIRS.localFolder, [basename, '_code']), '*.m*');
+    zip(fullfile(DIRS.localFolder, [basename, '_code']), 'C:\Users\Experiment\Documents\GitHub\2AFCVR\*.m*');
 end
 
 if TRIAL.info.no > 0
@@ -95,7 +97,7 @@ end
 if TRIAL.info.no == EXP.maxNTrials || TRIAL.info.abort == 1
     if SAVE2SERVER
         % save the code to the server
-        zip(fullfile(DIRS.serverFolder, [basename, '_code']), '*.m*');
+        zip(fullfile(DIRS.serverFolder, [basename, '_code']), 'C:\Users\Experiment\Documents\GitHub\2AFCVR\*.m*');
         % save the data to the server
         s = fullfile(DIRS.serverFolder, DIRS.fileName);
         try

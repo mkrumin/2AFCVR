@@ -13,6 +13,7 @@ elseif ~isempty(initParams)
     animalName=initParams.animalName;
 else
     animalName = input('Please enter mouse name: ','s');
+    animalName = upper(animalName);
 end
 
 if isempty(animalName)
