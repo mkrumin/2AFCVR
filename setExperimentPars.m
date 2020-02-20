@@ -18,9 +18,21 @@ switch upper(animalName)
     case 'JL022'
         fprintf('Loading parameters for %s\n', upper(animalName));
         Exp = loadJL022;  
-    case 'JL023'
+    case 'JL030'
         fprintf('Loading parameters for %s\n', upper(animalName));
-        Exp = loadJL023;  
+        Exp = loadJL030;  
+    case 'JL034'
+        fprintf('Loading parameters for %s\n', upper(animalName));
+        Exp = loadJL034;  
+    case 'JL035'
+        fprintf('Loading parameters for %s\n', upper(animalName));
+        Exp = loadJL035;  
+    case 'JL036'
+        fprintf('Loading parameters for %s\n', upper(animalName));
+        Exp = loadJL036;  
+    case 'JL037'
+        fprintf('Loading parameters for %s\n', upper(animalName));
+        Exp = loadJL037;  
     case 'LEW_002'
         fprintf('Loading parameters for %s\n', upper(animalName));
         Exp = loadLEW_002;

@@ -52,7 +52,7 @@ Screen('Preference', 'SkipSyncTests', 1);
 RIGNAME = RIGNAME((RIGNAME ~= 10)); % to remoove the CR at the end
 
 if strfind(RIGNAME, 'ZMAZE')
-    ScanImageIP='zscope';
+    ScanImageIP='zscope2';
     TimelineIP='zcamp3';
     EyeCameraIP='zquad';
     OptiStimIP = 'zcamp3';
