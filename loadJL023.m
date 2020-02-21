@@ -1,4 +1,4 @@
-function Exp = loadJL015()
+function Exp = loadJL023()
 
 
 %% frequently changed parameters go here
@@ -9,8 +9,8 @@ smallRewardValveTime = getValveTime(smallRewardAmount); % should be calibrated t
 largeRewardValveTime = getValveTime(largeRewardAmount); % should be calibrated to give ~4ul reward; set by MK 2017
 rewardDistance = Inf;%48; % give intermediate rewards every 'rewardDistance' cm of travel
 
-stimType = 'BAITED'; % 'BAITED', 'RANDOM', 'ALTERNATING', 'BOTH', 'REPLAY', 'INTERLIEVED', 'REPLAY_SCRAMBLED' 
-contrasts = [0 6 12 25 50]; % contrast levels of the gratings [0 6 12 25 50]
+stimType = 'BOTH'; % 'BAITED', 'RANDOM', 'ALTERNATING', 'BOTH', 'REPLAY', 'INTERLIEVED', 'REPLAY_SCRAMBLED' 
+contrasts = [50]; % contrast levels of the gratings [0 6 12 25 50]
 aGain = -0.2;   % gain of rotation angle
 restrict = 1; % 1 if we want to restrict the range of the head direction. 
 % if set to be less than pi/2 it will not allow the animal to FAIL the task

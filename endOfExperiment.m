@@ -20,7 +20,6 @@ global EXPREF;
 global OFFLINE;
 global SESSION;
 global EXP;
-% animalName = regexp(EXPREF, '_([A-Za-z]*\d+)$', 'tokens', 'once');
 
 % cleans up and exits state system
 
@@ -109,4 +108,5 @@ else
     newWater = myAlyx.postWater(animalID, waterAmount, now, 'Water 10% Sucrose');
     
     fprintf('%05.3f ml water administered\n%s\n', waterAmount, newWater.url)
+
 end
