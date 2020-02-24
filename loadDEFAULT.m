@@ -3,7 +3,7 @@ function Exp = loadDEFAULT()
 
 %% frequently changed parameters go here
 smallRewardAmount = 0.003;
-largeRewardAmount = 0.006;
+largeRewardAmount = 0.002;
 timeOut = 45; % [sec] trial times out after this number of seconds
 smallRewardValveTime = getValveTime(smallRewardAmount); % should be calibrated to give ~2ul reward; set by MK 2017
 largeRewardValveTime = getValveTime(largeRewardAmount); % should be calibrated to give ~4ul reward; set by MK 2017

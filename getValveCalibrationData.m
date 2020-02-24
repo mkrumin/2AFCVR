@@ -25,8 +25,9 @@ switch lower(rigName)
         % 10% sucrose water, 31/01/2020
 %         water = [2.1, 3.7, 4.3, 4.7, 5.2, 19.2]*1e-3;
 %         dur = [0.0084, 0.0148, 0.0237, 0.0306, 0.0378, 0.2525];
-        water = [1.9, 2.8, 3.2, 3.8, 4.1, 4.4]*1e-3;
-        dur = [0.0066, 0.0151, 0.0225, 0.0409, 0.0451, 0.0496];
+        % 10% sucrose water, 24/02/2020
+        water = [1.6, 1.7, 2, 2.8, 3.8]*1e-3;
+        dur = [0.0369, 0.0418, 0.0534, 0.0827, 0.1169];
     otherwise
         msg = ...
             sprintf('No valve calibration data for rig ''%s'', loading default values...\n', upper(rigName));
