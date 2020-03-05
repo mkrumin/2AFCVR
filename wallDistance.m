@@ -61,7 +61,7 @@ v = nVector(2);
 % quiver(xPix, zPix, u, v, scalingFactor*15, 'MaxHeadSize', 1, 'LineWidth', 2);
 % hold off;
 
-angleRange = 20:5:120;
+angleRange = 45:5:120;
 t = 0:0.5:10*scalingFactor;
 dL = Inf;
 % Left whisker pad
