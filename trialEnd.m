@@ -50,15 +50,15 @@ if TRIAL.info.no > 0
     end
     
     SESSION.allTrials(TRIAL.info.no)=TRIAL;
-%     s = fullfile(DIRS.serverFolder, DIRS.fileName);
+    s = fullfile(DIRS.serverFolder, DIRS.fileName);
     slocal = fullfile(DIRS.localFolder, DIRS.fileName);
-%     if SAVE2SERVER
-%         try
-%             save(s, 'EXP', 'SESSION');
-%         catch
-%             warning('There was a problem saving to the \\zserver');
-%         end
-%     end
+    if SAVE2SERVER
+        try
+            save(s, 'EXP', 'SESSION');
+        catch
+            warning('There was a problem saving to the \\zserver');
+        end
+    end
     try
         save(slocal, 'EXP', 'SESSION');
     catch
