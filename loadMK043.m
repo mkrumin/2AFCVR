@@ -2,7 +2,7 @@ function Exp = loadMK043()
 
 
 %% frequently changed parameters go here
-smallRewardAmount = 0.003;
+smallRewardAmount = 0.002;
 largeRewardAmount = 0.004;
 timeOut = 45; % [sec] trial times out after this number of seconds
 smallRewardValveTime = getValveTime(smallRewardAmount); % should be calibrated to give ~2ul reward; set by MK 2017
@@ -10,7 +10,7 @@ largeRewardValveTime = getValveTime(largeRewardAmount); % should be calibrated t
 rewardDistance = 300;%48; % give intermediate rewards every 'rewardDistance' cm of travel
 
 stimType = 'BAITED'; % 'BAITED', 'RANDOM', 'ALTERNATING', 'BOTH', 'REPLAY', 'INTERLIEVED', 'REPLAY_SCRAMBLED' 
-contrasts = [25 50]; % contrast levels of the gratings [0 6 12 25 50]
+contrasts = [0 6 12 25 50]; % contrast levels of the gratings [0 6 12 25 50]
 aGain = -0.2;   % gain of rotation angle
 restrict = 1; % 1 if we want to restrict the range of the head direction. 
 % if set to be less than pi/2 it will not allow the animal to FAIL the task
@@ -26,10 +26,10 @@ else
     listOfPoints = [];
 end
 
-ballBias = 20; % deg/meter
+ballBias = 0; % deg/meter
 
 fractionUseWhiskerControl = 0.5;
-fractionWallsVisible = 1;
+fractionWallsVisible = 0.9;
 
 %% definition of the whole structure
 Exp = struct('date', date,...                   %date of the experiment

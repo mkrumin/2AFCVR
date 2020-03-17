@@ -26,9 +26,9 @@ else
     listOfPoints = [];
 end
 
-ballBias = -40; % deg/meter
+ballBias = 0; % deg/meter
 
-fractionUseWhiskerControl = 0.5;
+fractionUseWhiskerControl = 0;
 fractionWallsVisible = 1;
 
 %% definition of the whole structure
