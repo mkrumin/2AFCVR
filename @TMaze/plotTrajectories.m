@@ -41,6 +41,7 @@ for iContrast = 1:nContrasts
     xlim([-thMax, thMax]+[-0.1 0.1]);
     ylim([0 zMax+1]);
     axis off;
+    title(sprintf('\\pm%g %%', options.contrasts(iContrast)));
     
     % plotting 'stimulus right' vs 'stimulus left'
     % Unnecessary to plot twice for 0% stimulus
