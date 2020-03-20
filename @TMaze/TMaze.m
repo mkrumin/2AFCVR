@@ -1,4 +1,4 @@
-classdef TMaze
+classdef TMaze < handle
     properties
         SESSION;    % this structure includes all the session data
         EXP;        % this structure includes the session parameters
@@ -11,6 +11,7 @@ classdef TMaze
         pcData = struct('cc', [], 'nn', [], 'pp', [], 'sem', []); % summary of behavioral data for fitting PC
         pcFit = struct('modelType', '', 'modelStr', '', 'pars', [], 'Likelihood', [], 'nFits', [], 'parsStart', [], 'parsMin', [], 'parsMax', []);
         posUniform; % posdata on a uniform grid (vectors of the same length, time-rescaled according to trial beginning/end)
+        trialData = struct();
     end
     
     methods
