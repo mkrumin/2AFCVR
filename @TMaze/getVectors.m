@@ -60,6 +60,18 @@ function dataOut = estMouseRunning(dataIn)
         % not 'hugging' the side wall
         idxX = abs(tr.vr.x) < (obj.EXP.corridorWidth/2 - obj.EXP.minWallsDistance - 0.1);
         
-        validIdx = idxCL & idxZ & idxTh & idxX;
+        validIdx = find(idxCL & idxZ & idxTh & idxX);
+        
+        
     end
 end
+
+TRIAL.posdata(count,T) = TRIAL.posdata(count-1,T) + dby;
+if(abs(TRIAL.posdata(count,T))>(pi))
+    TRIAL.posdata(count,T) = -1*((2*pi)-abs(TRIAL.posdata(count,T)))*sign(TRIAL.posdata(count,T));
+end
+TRIAL.posdata(count,X) = TRIAL.posdata(count-1,X) + ...
+    dbx*sin(TRIAL.posdata(count,T)) + dax*cos(TRIAL.posdata(count,T));
+TRIAL.posdata(count,Z) = TRIAL.posdata(count-1,Z) - ...
+    dbx*cos(TRIAL.posdata(count,T)) + dax*sin(TRIAL.posdata(count,T));
+            
