@@ -42,36 +42,96 @@ for iTrial = 1:nTrials
     trialData(iTrial).meta.closedLoop = trials(iTrial).freezeOver;
 end
 
-trialData = estMouseRunning(trialData);
+trialData = estMouseRunning(trialData, obj.EXP);
+obj.trialData = trialData(:);
 
 end
 
-function dataOut = estMouseRunning(dataIn)
+function dataOut = estMouseRunning(dataIn, EXP)
     
+    dataOut = dataIn;
+    [BALL_TO_DEGREE, BALL_TO_ROOM] = getScalingFactors(dataIn, EXP);
     nTrials = length(dataIn);
     for iTrial = 1:nTrials
         tr = dataIn(iTrial);
-        % times when the mouse was controlling the VR
-        idxCL = tr.meta.closedLoop;
-        % positions in the main corridor
-        idxZ = tr.vr.z < (obj.EXP.roomLength - obj.EXP.corridorWidth - obj.EXP.minWallsDistance);
-        % positions within the valid theta range
-        idxTh = abs(tr.vr.theta) < (obj.EXP.restrictionAngle*180/pi - 0.1);
-        % not 'hugging' the side wall
-        idxX = abs(tr.vr.x) < (obj.EXP.corridorWidth/2 - obj.EXP.minWallsDistance - 0.1);
+
+        % mimicking whatever the VR was doing during the behavior
+
+        % raw data as received from the ball
+        dax = tr.ballRaw.dax;
+        day = tr.ballRaw.day;
+        dbx = tr.ballRaw.dbx;
+        dby = tr.ballRaw.dby;
         
-        validIdx = find(idxCL & idxZ & idxTh & idxX);
+        % replace NaNs with zeros
+        dax(isnan(dax)) = 0;
+        day(isnan(day)) = 0;
+        dbx(isnan(dbx)) = 0;
+        dby(isnan(dby)) = 0;
         
+        % translate from pixels to cm and degrees
+        dax_orig = dax*BALL_TO_ROOM;
+        dbx_orig = dbx*BALL_TO_ROOM;
+        day_orig = day*BALL_TO_DEGREE; %unused, because dby encodes the same information
+        dby_orig = dby*BALL_TO_DEGREE;
+
+        % mulitply by gain factors used in the VR
+        dax = dax_orig*EXP.xGain;
+        dbx = dbx_orig*EXP.zGain;
+        day = day_orig*pi/180*EXP.aGain; %unused, because dby encodes the same information
+        dby = dby_orig*pi/180*EXP.aGain;
+        
+        if isfield(EXP, 'ballBias')
+            dby = dby + dbx/100 * EXP.ballBias * pi/180;
+        end
+        
+        z0 = EXP.minWallsDistance;
+        theta0 = 0;
+        x0 = 0;
+        theta = theta0 + cumsum(dby.*tr.meta.closedLoop);
+        z = z0 + cumsum((dbx.*cos(theta) + dax.*sin(theta)).*tr.meta.closedLoop);
+        x = x0 + cumsum((dbx.*sin(theta) + dax.*cos(theta)).*tr.meta.closedLoop);
+        
+        dataOut(iTrial).mouse = struct;
+        % mouse position in the maze 'without the walls' (not restricted by VR rules)
+        dataOut(iTrial).mouse.x = x; 
+        dataOut(iTrial).mouse.z = z;
+        dataOut(iTrial).mouse.theta = theta * 180/pi;
+        % running increments of the mouse, after multiplication of VR gains
+        % and after using VR corrections (e.g. ballBias)
+        dataOut(iTrial).mouse.dRollVR = dax;
+        dataOut(iTrial).mouse.dPitchVR = dbx;
+        dataOut(iTrial).mouse.dYawVR = dby;
+        % raw running increments of the mouse (in real world units)
+        dataOut(iTrial).mouse.dRollRaw = dax_orig;
+        dataOut(iTrial).mouse.dPitchRaw = dbx_orig;
+        dataOut(iTrial).mouse.dYawRaw = dby_orig;
         
     end
 end
 
-TRIAL.posdata(count,T) = TRIAL.posdata(count-1,T) + dby;
-if(abs(TRIAL.posdata(count,T))>(pi))
-    TRIAL.posdata(count,T) = -1*((2*pi)-abs(TRIAL.posdata(count,T)))*sign(TRIAL.posdata(count,T));
-end
-TRIAL.posdata(count,X) = TRIAL.posdata(count-1,X) + ...
-    dbx*sin(TRIAL.posdata(count,T)) + dax*cos(TRIAL.posdata(count,T));
-TRIAL.posdata(count,Z) = TRIAL.posdata(count-1,Z) - ...
-    dbx*cos(TRIAL.posdata(count,T)) + dax*sin(TRIAL.posdata(count,T));
+function [BALL_TO_DEGREE, BALL_TO_ROOM] = getScalingFactors(data, EXP)
+
+        % these are scaling factors from run.m for ZAMBONI rig
+        BALL_TO_DEGREE = 1/12;
+        BALL_TO_ROOM = 1/65;
+
+        return;
+        
+        % this code is prep for future use, to estimate the scaling
+        % factors from actual VR data (if unknown)
+        
+        for iTrial = 1:nTrials
+            tr = data(iTrial);
+            % times when the mouse was controlling the VR
+            idxCL = tr.meta.closedLoop;
+            % positions in the main corridor
+            idxZ = tr.vr.z < (EXP.roomLength - EXP.corridorWidth - EXP.minWallsDistance);
+            % positions within the valid theta range
+            idxTh = abs(tr.vr.theta) < (EXP.restrictionAngle*180/pi - 0.1);
+            % not 'hugging' the side wall
+            idxX = abs(tr.vr.x) < (EXP.corridorWidth/2 - EXP.minWallsDistance - 0.1);
             
+            validIdx = find(idxCL & idxZ & idxTh & idxX);
+        end
+end
