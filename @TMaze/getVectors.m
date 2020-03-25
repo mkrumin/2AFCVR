@@ -88,9 +88,13 @@ function dataOut = estMouseRunning(dataIn, EXP)
         z0 = EXP.minWallsDistance;
         theta0 = 0;
         x0 = 0;
+        % this is how VR was calculating the positions (see run.m for reference)
+        % however here, we omit the keepInside.m step, we want to integrate 
+        % whatever the mouse was doing without applying the VR boundaries
         theta = theta0 + cumsum(dby.*tr.meta.closedLoop);
         z = z0 + cumsum((dbx.*cos(theta) + dax.*sin(theta)).*tr.meta.closedLoop);
         x = x0 + cumsum((dbx.*sin(theta) + dax.*cos(theta)).*tr.meta.closedLoop);
+        
         
         dataOut(iTrial).mouse = struct;
         % mouse position in the maze 'without the walls' (not restricted by VR rules)
@@ -121,17 +125,17 @@ function [BALL_TO_DEGREE, BALL_TO_ROOM] = getScalingFactors(data, EXP)
         % this code is prep for future use, to estimate the scaling
         % factors from actual VR data (if unknown)
         
-        for iTrial = 1:nTrials
-            tr = data(iTrial);
-            % times when the mouse was controlling the VR
-            idxCL = tr.meta.closedLoop;
-            % positions in the main corridor
-            idxZ = tr.vr.z < (EXP.roomLength - EXP.corridorWidth - EXP.minWallsDistance);
-            % positions within the valid theta range
-            idxTh = abs(tr.vr.theta) < (EXP.restrictionAngle*180/pi - 0.1);
-            % not 'hugging' the side wall
-            idxX = abs(tr.vr.x) < (EXP.corridorWidth/2 - EXP.minWallsDistance - 0.1);
-            
-            validIdx = find(idxCL & idxZ & idxTh & idxX);
-        end
+%         for iTrial = 1:nTrials
+%             tr = data(iTrial);
+%             % times when the mouse was controlling the VR
+%             idxCL = tr.meta.closedLoop;
+%             % positions in the main corridor
+%             idxZ = tr.vr.z < (EXP.roomLength - EXP.corridorWidth - EXP.minWallsDistance);
+%             % positions within the valid theta range
+%             idxTh = abs(tr.vr.theta) < (EXP.restrictionAngle*180/pi - 0.1);
+%             % not 'hugging' the side wall
+%             idxX = abs(tr.vr.x) < (EXP.corridorWidth/2 - EXP.minWallsDistance - 0.1);
+%             
+%             validIdx = find(idxCL & idxZ & idxTh & idxX);
+%         end
 end
