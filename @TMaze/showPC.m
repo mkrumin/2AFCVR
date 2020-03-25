@@ -1,8 +1,22 @@
 function axesHandle = showPC(obj, axesHandle)
+
+if iscell(obj.ExpRef)
+    ind = true(size(obj.ExpRef{1}));
+    for iExpRef = 2:length(obj.ExpRef)
+        ind = ind & (obj.ExpRef{1} == obj.ExpRef{iExpRef});
+    end
+    expRefStr = obj.ExpRef{1};
+    expRefStr(~ind) = 'X';
+else
+    expRefStr = obj.ExpRef;
+end
+
 if nargin<2
-    figure('Name', sprintf('Psychometric Curve, %s', obj.ExpRef));
+    figure('Name', sprintf('Psychometric Curve, %s', expRefStr));
     axesHandle = gca;
 end
+% making the string valid for the title() function
+expRefStr = strrep(expRefStr, '_', '\_');
 
 addpath('\\zserver\Code\Psychofit\');
 cc = obj.pcData.cc;
@@ -40,17 +54,6 @@ ylim([0 1]);
 
 plot([0 0], ylim, 'k:');
 plot(xlim, [0.5, 0.5], 'k:');
-if iscell(obj.ExpRef)
-    ind = true(size(obj.ExpRef{1}));
-    for iExpRef = 2:length(obj.ExpRef)
-        ind = ind & (obj.ExpRef{1} == obj.ExpRef{iExpRef});
-    end
-    expRefStr = obj.ExpRef{1};
-    expRefStr(~ind) = 'X';
-else
-    expRefStr = obj.ExpRef;
-end
-expRefStr = strrep(expRefStr, '_', '\_');
 title(expRefStr)
 xlabel('Contrast [%]');
 ylabel('Rightward Choice Probability');
