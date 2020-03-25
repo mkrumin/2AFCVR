@@ -8,6 +8,16 @@ obj.SESSION.contrastSequence = cat(1, obj.SESSION.contrastSequence(1:nTrialsOrig
 obj.SESSION.probR = cat(2, obj.SESSION.probR(1:nTrialsOriginal), addObj.SESSION.probR(1:nTrialsAdditional));
 obj.SESSION.Log = cat(2, obj.SESSION.Log(1:nTrialsOriginal), addObj.SESSION.Log(1:nTrialsAdditional));
 obj.SESSION.allTrials = cat(2, obj.SESSION.allTrials(1:nTrialsOriginal), addObj.SESSION.allTrials(1:nTrialsAdditional));
+if isfield(obj.SESSION, 'useWhiskerControl') && isfield(addObj.SESSION, 'useWhiskerControl')
+    obj.SESSION.useWhiskerControl = ...
+        cat(1, obj.SESSION.useWhiskerControl(1:nTrialsOriginal), ...
+        addObj.SESSION.useWhiskerControl(1:nTrialsAdditional));    
+end
+if isfield(obj.SESSION, 'showWalls') && isfield(addObj.SESSION, 'showWalls')
+    obj.SESSION.showWalls = ...
+        cat(1, obj.SESSION.showWalls(1:nTrialsOriginal), ...
+        addObj.SESSION.showWalls(1:nTrialsAdditional));    
+end
 
 if ischar(obj.ExpRef)
     obj.ExpRef = {obj.ExpRef};
