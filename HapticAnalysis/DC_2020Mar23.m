@@ -1,65 +1,75 @@
 % Script for Data Club on March 23 2020
 
-ExpRef = '2020-03-17_1724_MK041';
-TM = TMaze(ExpRef);
+clear TM EXP
+
+% select which animal and what dates to include in the analysis
+
+% animalName = 'MK040';
+% dates = datenum('2020-03-06'):datenum('2020-03-18');
+% excludeDates = datenum('2020-03-12');
+% animalName = 'MK041';
+% dates = datenum('2020-03-06'):datenum('2020-03-18');
+% excludeDates = datenum('2020-03-12');
+animalName = 'MK042';
+dates = datenum('2020-03-06'):datenum('2020-03-18');
+excludeDates = datenum('2020-03-12');
+% animalName = 'MK043';
+% dates = datenum('2020-03-06'):datenum('2020-03-18');
+% excludeDates = datenum('2020-03-11');
+
+% animalName = 'MK044';
+% dates = datenum('2020-03-05'):datenum('2020-03-18');
+% excludeDates = datenum('2020-03-11');
+
+dates = setdiff(dates, excludeDates);
+[allExpRefs, allDateNums, iExp] = dat.listExps(animalName);
+[validDates, expIdx] = ismember(allDateNums, dates);
+validDates = allDateNums(validDates);
+expIdx = find(expIdx);
+nExps = length(expIdx);
+nRows = floor(sqrt(nExps));
+nColumns = ceil(nExps/nRows);
+figure;
+for iExp = 1:nExps
+    TM(iExp) = TMaze(allExpRefs{expIdx(iExp)});
+    try
+        TM(iExp).getPCData;
+        TM(iExp).fitPC;
+        TM(iExp).showPC(subplot(nRows, nColumns, iExp));
+    end
+    EXP(iExp) = TM(iExp).EXP;
+end
+
+% let's see what parameters had changed between the different experiments
+% then decide if we really want to merge these experiments together
+activeFieldNames = structCompare(EXP);
+printTable(EXP, activeFieldNames);
+
+% merge all the sessions
+for iExp = 2:nExps
+    TM(1) = TM(1).Merge(TM(iExp));
+end
+TM = TM(1);
+% ExpRef = '2020-03-17_1724_MK041';
+% TM = TMaze(ExpRef);
 TM.getPCData;
 TM.fitPC;
 TM.showPC;
 
+%% Extract all the data into an easy to work with format
+
 TM.getVectors;
 
-nTrials = TM.nTrials;
-idxWalls = TM.SESSION.useWhiskerControl(1:nTrials);
-idxVis = TM.SESSION.showWalls(1:nTrials);
-        %%
-fullTrials = find(idxWalls & idxVis);
-visTrials = find(~idxWalls & idxVis);
-wallsTrials = find(idxWalls & ~idxVis);
-blankTrials = find(~idxWalls & ~idxVis);
+%% plot x and theta distributions for different conditions
 
-% let's plot some basic histograms
+plotXThDistributions(TM);
 
-tmpVR = ([TM.trialData.vr]');
-tmpMeta = ([TM.trialData.meta]');
-tmpMouse = ([TM.trialData.mouse]');
+%% let's see some trajectories (closed- and open-loop)
+% some extra settings/parameters inside the function
 
-allVrX = cell2mat({tmpVR.x}');
-allVrZ = cell2mat({tmpVR.z}');
-allVrTheta = cell2mat({tmpVR.theta}');
-allCL = cell2mat({tmpMeta.closedLoop}');
-allMouseX = cell2mat({tmpMouse.x}');
-allMouseZ = cell2mat({tmpMouse.z}');
-allMouseTheta = cell2mat({tmpMouse.theta}');
+plotSampleTrajectories(TM);
 
-xLims = prctile(allMouseX(allCL), [1 99]);
-thLims = prctile(allMouseTheta(allCL), [1 99]);
+%% plot distributions of derivatives of the heading angle (Theta)
 
+plotDThetaDistributions(TM);
 
-
-
-validTrials = wallsTrials;
-figure('Name', 'Walls trials');
-for i = 1:length(validTrials)
-        
-    iTrial = validTrials(i);
-        tr = TM.trialData(iTrial);
-%         figure('Name', sprintf('iTrial = %g', iTrial));
-        ax1 = subplot(1, 2, 1);
-        plot(tr.vr.theta, tr.vr.z, 'b', 'LineWidth', 2);
-        hold on;
-        plot(tr.mouse.theta, tr.mouse.z, 'r--', 'LineWidth', 2);
-        xlabel('Theta [deg]');
-        ylabel('z [cm]');
-        grid on;
-%         axis equal
-        ax2 = subplot(1, 2, 2);
-        plot(tr.vr.x, tr.vr.z, 'b', 'LineWidth', 2);
-        hold on;
-        plot(tr.mouse.x, tr.mouse.z, 'r--', 'LineWidth', 2);
-        xlabel('x [cm]');
-        grid on;
-%         axis equal
-        linkaxes([ax1, ax2], 'y')
-%         ylim([0 100]);
-end
-        %%
