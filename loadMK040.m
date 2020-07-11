@@ -26,7 +26,7 @@ else
     listOfPoints = [];
 end
 
-ballBias = 0; % deg/meter
+ballBias = 20; % deg/meter
 
 fractionUseWhiskerControl = 0.5;
 fractionWallsVisible = 0.9;
