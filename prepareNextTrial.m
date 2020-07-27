@@ -26,9 +26,10 @@ global OptiStimUDP;
 global EXPREF;
 
 % move servo to neutral position
-[stagePos, Vout] = moveStage(Inf, Inf);
+[stagePos, Vout, ballBlocked] = moveStage(Inf, Inf, Inf);
 dL = Inf;
 dR = Inf;
+dF = Inf;
 
 TRIAL_COUNT = TRIAL_COUNT +1;
 
@@ -58,8 +59,9 @@ if isequal(EXP.stimType, 'REPLAY_SCRAMBLED')
 else
     TRIAL.posdata = zeros(3000,6,'double'); % x,y,z,theta,speed,inRoom
     TRIAL.pospars = {'X','Y','Z','theta','speed','inRoom'};
-    TRIAL.glassWallsData = zeros(3000,4,'double'); % dL, dR, stagePos, Vout
-    TRIAL.glassWallsPars = {'distLeftWall', 'distRightWall', 'stagePosition', 'stageVoltageSignal'};
+    TRIAL.glassWallsData = zeros(3000,6,'double'); % dL, dR, stagePos, Vout
+    TRIAL.glassWallsPars = {'distLeftWall', 'distRightWall', 'stagePosition', ...
+        'stageVoltageSignal', 'distFront', 'ballIsBlocked'};
     TRIAL.time = zeros(3000,1,'double');
     TRIAL.balldata = []; %zeros(3000,5,'double');
     TRIAL.balldataParams = {'ballTime', 'dax', 'dbx', 'day', 'dby'};

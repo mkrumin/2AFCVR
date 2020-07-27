@@ -29,7 +29,7 @@ end
 ballBias = 0; % deg/meter
 
 fractionUseWhiskerControl = 0.5;
-fractionWallsVisible = 0.0;
+fractionWallsVisible = 0.9;
 
 %% definition of the whole structure
 Exp = struct('date', date,...                   %date of the experiment

@@ -1,4 +1,4 @@
-function [dL, dR] = wallDistance(pos)
+function [dL, dR, dF] = wallDistance(pos)
 
 global EXP;
 
@@ -109,6 +109,29 @@ for rotAngle = angleRange
         end
     end
 end
+% Distance to a wall in front of the mouse
+dF = Inf;
+for rotAngle = -20:10:20
+    phi = -rotAngle * pi / 180; % counter clockwise rotation is defined positive
+    nNew = [cos(phi),  - sin(phi); sin(phi), cos(phi)] * [u, v]';
+    uNew = nNew(1);
+    vNew = nNew(2);
+%     quiver(xPix, zPix, uNew, vNew, scalingFactor*10, 'MaxHeadSize', 0, 'Color', 'g');
+    xLine = xPix + t*uNew;
+    zLine = zPix + t*vNew;
+    profile = interp2(1:nX, 1:nZ, single(bw), xLine, zLine, 'linear');
+    delta = [0, abs(diff(profile > 0.5))];
+    tCrossing = t(find(delta, 1, 'first'));
+    if ~isempty(tCrossing)
+%         plot(xPix + uNew*tCrossing, zPix + vNew*tCrossing, 'c.', 'MarkerSize', 16);
+        if dF > tCrossing 
+            % keep the record of the shortest distance and direction
+            dF = tCrossing;
+            uFront = uNew;
+            vFront = vNew;
+        end
+    end
+end
 
 % if dL < dR
 %     plot(xPix + uLeft*dL, zPix + vLeft*dL, 'm.', 'MarkerSize', 30);
@@ -120,6 +143,7 @@ end
 
 dL = dL/scalingFactor;
 dR = dR/scalingFactor;
+dF = dF/scalingFactor;
 
 % title({sprintf('X = %4.2f [cm], Z = %4.2f [cm], \\theta = %2.0f [deg]', x, z, th*180/pi); ...
 %     sprintf('dLeft = %4.2f [cm], dRight = %4.2f [cm]', dL, dR)});

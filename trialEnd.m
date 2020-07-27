@@ -27,7 +27,7 @@ global SAVE2SERVER
 % (otherwise there is a larger inter-stimulus interval after the first
 % trial
 
-moveStage(Inf, Inf);
+moveStage(Inf, Inf, Inf);
 
 [~, basename, ~] = fileparts(DIRS.fileName);
 

@@ -21,6 +21,7 @@ end
 
 global daqSession;     % analog output for valve triggering & light stimulation(instead of DIO)
 global servoDaqSession;     % analog output for moving the servo motor
+global ballDaqSession;     % digital output for blocking the air ball
 global BallUDPPort;    % the UDP port
 global ScanImageUDP;  % the UDP port
 global EyeCameraUDP;  % the UDP port
@@ -81,10 +82,12 @@ else
     aoValveChannel = 'ao0';  
     aoServoChannel = 'ao1';  
     dioDeviceID='Dev1';
-    dioCh=1;
-    dioPort=0;
+    dioCh=0;
+    dioPort=1;
     optiStimChanInd=1;
     valveChanInd=2;
+    ballDeviceID = 'Dev1';
+    ballPortLine = 'Port1/Line0';
 end
 
 if ~OFFLINE
@@ -126,9 +129,13 @@ if ~OFFLINE
     
     servoDaqSession = daq.createSession(daqVendorName);
     servoDaqSession.Rate = 10e3;
-    % defining the Analog Output object for the valve (for precise timing)
+    % defining the Analog Output object for the glass walls
     servoDaqSession.addAnalogOutputChannel(aoDeviceID, aoServoChannel, 'Voltage');
     servoDaqSession.outputSingleScan(parkServoVoltage);
+    
+    ballDaqSession = daq.createSession(daqVendorName);
+    addDigitalChannel(ballDaqSession, ballDeviceID, ballPortLine,'OutputOnly')
+    ballDaqSession.outputSingleScan(ballFloatingVoltage);
 end
 
 % prepare screen-----------------------------------------------------------

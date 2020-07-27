@@ -160,7 +160,7 @@ try
         Screen('EndOpenGL', MYSCREEN.windowPtr(1));
         
         % Show the sync square
-        % alternate between black and white with every frame
+        % alternate between black and white with every frames
         if trialActive
             if freezeOver
                 if isequal(EXP.stimType, 'REPLAY')
@@ -281,17 +281,19 @@ try
         %% move the whisker feedback stage
         if SESSION.useWhiskerControl(TRIAL.info.no)
             try
-                [dL, dR] = wallDistance(TRIAL.posdata(count, :));
-                [stagePos, Vout] = moveStage(dL, dR);
+                [dL, dR, dF] = wallDistance(TRIAL.posdata(count, :));
+                [stagePos, Vout, ballBlocked] = moveStage(dL, dR, dF);
             catch
                 % do nothing, stay where you are
             end
         else
-            [stagePos, Vout] = moveStage(Inf, Inf);
+            [stagePos, Vout, ballBlocked] = moveStage(Inf, Inf, Inf);
             dL = Inf;
             dR = Inf;
+            dF = Inf;
+            
         end
-        TRIAL.glassWallsData(count, :) = [dL, dR, stagePos, Vout];
+        TRIAL.glassWallsData(count, :) = [dL, dR, stagePos, Vout, dF, ballBlocked];
         
         %% check if not going backwards in the main corridor
         % MK - timeout the animal if it goes backwards (only in the main
