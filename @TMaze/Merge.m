@@ -32,6 +32,8 @@ obj.outcome = cat(2, obj.outcome, addObj.outcome);
 obj.report = cat(2, obj.report, addObj.report);
 obj.contrastSequence = cat(1, obj.contrastSequence, addObj.contrastSequence); % signed contrast (with negative being left-side stimuli)
 obj.isRandom = cat(1, obj.isRandom, addObj.isRandom);
+obj.isHaptic = cat(1, obj.isHaptic, addObj.isHaptic);
+obj.isVisual = cat(1, obj.isVisual, addObj.isVisual);
 
 obj.pcData = struct('cc', [], 'nn', [], 'pp', [], 'sem', []);
 obj.pcFit = struct('modelType', '', 'modelStr', '', 'pars', [], 'Likelihood', [], 'nFits', [], 'parsStart', [], 'parsMin', [], 'parsMax', []);

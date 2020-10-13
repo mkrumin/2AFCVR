@@ -8,6 +8,9 @@ classdef TMaze < handle
         report = '';    %  e.g. 'RRLLLRLRLLLRLTTRLLRLRLTFU'
         contrastSequence; % signed contrast (with negative being left-side stimuli)
         isRandom = []; % true for random trial, false for e.g. baited
+        isHaptic = []; % true if whiskers' walls were activated during the trial
+        isVisual = []; % true if visual stimulus was ON (not a control trial with gray screen)
+        
         pcData = struct('cc', [], 'nn', [], 'pp', [], 'sem', []); % summary of behavioral data for fitting PC
         pcFit = struct('modelType', '', 'modelStr', '', 'pars', [], 'Likelihood', [], 'nFits', [], 'parsStart', [], 'parsMin', [], 'parsMax', []);
         posUniform; % posdata on a uniform grid (vectors of the same length, time-rescaled according to trial beginning/end)
@@ -59,6 +62,18 @@ classdef TMaze < handle
                 obj.isRandom = [tmp == 'C']';
             else
                 obj.isRandom = true(nTrials, 1);
+            end
+            if isfield(obj.SESSION, 'useWhiskerControl')
+                obj.isHaptic = reshape(obj.SESSION.useWhiskerControl(1:nTrials), [nTrials, 1]);
+            else
+                % none of the trial used haptic feedback
+                obj.isHaptic = false(nTrials, 1);
+            end
+            if isfield(obj.SESSION, 'showWalls')
+                obj.isVisual = reshape(obj.SESSION.showWalls(1:nTrials), [nTrials, 1]);
+            else
+                % all trials were visual
+                obj.isVisual = true(nTrials, 1);
             end
         end % TMaze constructor
         

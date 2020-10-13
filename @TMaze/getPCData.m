@@ -13,6 +13,10 @@ for iContrast = 1:nContrasts
     idx = idx & (obj.report =='R' | obj.report == 'L')'; 
     % including only random trials
     idx = idx & obj.isRandom;
+    % excluding haptic feedback trials
+    idx = idx & ~obj.isHaptic;
+    % excluding non-visual trials
+    idx = idx & obj.isVisual;
     nn(iContrast) = sum(idx);
 %     pp(iContrast) = sum(obj.report(idx) == 'R')/nn(iContrast);
     [pp(iContrast), confInt(:, iContrast)] = binofit(sum(obj.report(idx) == 'R'), nn(iContrast), 0.05);
